@@ -6,7 +6,7 @@
 /*   By: fra <fra@student.codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/10/11 21:35:19 by fra           #+#    #+#                 */
-/*   Updated: 2023/10/12 20:20:05 by fra           ########   odam.nl         */
+/*   Updated: 2023/10/12 21:33:13 by fra           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,39 +27,21 @@ namespace brt
 	const int 		_minGrade = 150;
 }
 
-// const int 		_maxGrade = 1;
-// const int 		_minGrade = 150;
-
-// int				gradeChecker( int );
-
-// std::string		getStrGrade( int );
-
-
 class brt::GradeTooHighException : public std::exception
 {
 	public:
-		GradeTooHighException(std::string const msg) : 
-			std::exception() , _msg(msg) {}
-		virtual const char* what() const throw();
+		GradeTooHighException( void) : std::exception() {}
 		virtual ~GradeTooHighException() throw() { }
-	
-	protected:
-		const std::string _msg;
+		virtual const char* what() const throw();
 };
 
 class brt::GradeTooLowException : public std::exception
 {
 	public:
-		GradeTooLowException(std::string const msg) : 
-			std::exception() , _msg(msg) {}
-		virtual const char* what() const throw();
+		GradeTooLowException( void) : std::exception() {}
 		virtual ~GradeTooLowException() throw() { }
-	
-	protected:
-		const std::string _msg;
+		virtual const char* what() const throw();
 };
-
-// class AForm;
 
 class brt::Bureaucrat
 {
@@ -79,6 +61,7 @@ class brt::Bureaucrat
 		void				incrementGrade( void ) throw(brt::GradeTooHighException);
 		void				decrementGrade( void ) throw(brt::GradeTooLowException);
 		void				signForm( brt::AForm& ) throw();
+		void				executeForm( brt::AForm& ) throw();
 		std::string  		toString ( void ) const throw();
 
 	private:

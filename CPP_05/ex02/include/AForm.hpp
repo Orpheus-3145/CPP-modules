@@ -18,8 +18,25 @@
 namespace brt
 {
 	class AForm;
+	class FormNotSignedException;
+	class FormAlreadySignedException;
 }
 
+class brt::FormNotSignedException : public std::exception
+{
+	public:
+		FormNotSignedException( void ) : std::exception() {}
+		virtual ~FormNotSignedException() throw() { }
+		virtual const char* what() const throw();
+};
+
+class brt::FormAlreadySignedException : public std::exception
+{
+	public:
+		FormAlreadySignedException( void ) : std::exception() {}
+		virtual ~FormAlreadySignedException() throw() { }
+		virtual const char* what() const throw();
+};
 class brt::AForm
 {
 	public:
@@ -47,7 +64,9 @@ class brt::AForm
 		int					getGradeToSign( void ) const;
 		int					getGradeToExec( void ) const;
 
-		void beSigned( brt::Bureaucrat& ) throw(brt::GradeTooLowException);
+		void 			beSigned( brt::Bureaucrat& ) throw(brt::GradeTooLowException, brt::FormAlreadySignedException);
+		void 			beExecuted( brt::Bureaucrat& buro ) throw(brt::GradeTooLowException, brt::FormAlreadySignedException);
+		virtual void 	execute( void ) const throw(brt::GradeTooLowException, brt::FormNotSignedException) =0;
 
 		std::string  		toString ( void ) const throw();
 

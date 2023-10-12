@@ -6,12 +6,13 @@
 /*   By: fra <fra@student.codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/10/12 01:12:01 by fra           #+#    #+#                 */
-/*   Updated: 2023/10/12 20:20:05 by fra           ########   odam.nl         */
+/*   Updated: 2023/10/12 21:51:15 by fra           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Bureaucrat.hpp"
-#include "Form.hpp"
+// #include "AForm.hpp"
+#include "PresidentialPardonForm.hpp"
 
 void getGrade(int& grade)
 {
@@ -50,7 +51,7 @@ int main( void )
 	}
 	catch (brt::GradeTooHighException const& error)
 	{
-		std::cout << "grade of" << buro << " is the highest" << std::endl;
+		std::cout << "grade of " << buro << " is already the highest" << std::endl;
 	}
 	try
 	{
@@ -59,10 +60,13 @@ int main( void )
 	}
 	catch (brt::GradeTooHighException const& error)
 	{
-		std::cout << "grade of " << buro << " is the highest" << std::endl;
+		std::cout << "grade of " << buro << " is already the highest" << std::endl;
 	}
-	brt::AForm document("contract", 123, 67);
-	std::cout << "A new form exists:\n" << document.toString() << std::endl;
-	buro.signForm(document);
+	brt::AForm *document = new brt::forms::PresidentialPardonForm("Timoty");
+	// brt::forms::PresidentialPardonForm prova;
+	std::cout << "A new form exists:\n" << document->toString() << std::endl;
+	buro.signForm(*document);
+	buro.executeForm(*document);
+	delete document ;
 	return (0);
 }

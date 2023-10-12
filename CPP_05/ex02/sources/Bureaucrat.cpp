@@ -6,19 +6,29 @@
 /*   By: fra <fra@student.codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/10/11 21:56:38 by fra           #+#    #+#                 */
-/*   Updated: 2023/10/12 20:20:05 by fra           ########   odam.nl         */
+/*   Updated: 2023/10/12 22:05:42 by fra           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Bureaucrat.hpp"
-#include "Form.hpp"
+#include "AForm.hpp"
+
+const char* brt::GradeTooHighException::what( void ) const throw()
+{
+	return ("grade is bigger than the maximum allowed");
+}
+
+const char* brt::GradeTooLowException::what( void ) const throw()
+{
+	return ("grade is smaller than the minimum allowed");
+}
 
 int	brt::gradeChecker( int toCheck )
 {
 	if (toCheck < brt::_maxGrade)
-		throw brt::GradeTooHighException("input too high");
+		throw brt::GradeTooHighException();
 	else if (toCheck > brt::_minGrade)
-		throw brt::GradeTooLowException("input too low");
+		throw brt::GradeTooLowException();
 	else
 		return (toCheck);
 }
@@ -57,7 +67,7 @@ int		brt::Bureaucrat::getGrade( void ) const throw()
 void	brt::Bureaucrat::incrementGrade( void ) throw(brt::GradeTooHighException)
 {
 	if (this->_grade == _maxGrade)
-		throw (GradeTooHighException("increased too much"));
+		throw (GradeTooHighException());
 	else
 		this->_grade--;
 }
@@ -65,7 +75,7 @@ void	brt::Bureaucrat::incrementGrade( void ) throw(brt::GradeTooHighException)
 void	brt::Bureaucrat::decrementGrade( void ) throw(brt::GradeTooLowException)
 {
 	if (this->_grade == _maxGrade)
-		throw (GradeTooLowException("decreased too much"));
+		throw (GradeTooLowException());
 	else
 		this->_grade++;
 }
@@ -77,9 +87,22 @@ void	brt::Bureaucrat::signForm( brt::AForm& doc) throw()
 		doc.beSigned(*this);
 		std::cout << *this << " successfully signed " << doc << std::endl;
 	}
-	catch(GradeTooLowException const& err)
+	catch( std::exception& err )
 	{
 		std::cout << *this << " couldn’t sign " << doc << " reason: " << err.what() <<std::endl;
+	}
+}
+
+void	brt::Bureaucrat::executeForm( brt::AForm& doc ) throw()
+{
+	try
+	{
+		doc.beExecuted(*this);
+		std::cout << *this << " successfully executed " << doc << std::endl;
+	}
+	catch( std::exception& err )
+	{
+		std::cout << *this << " couldn’t execute " << doc << " reason: " << err.what() <<std::endl;
 	}
 }
 
@@ -90,16 +113,6 @@ std::string 	brt::Bureaucrat::toString ( void ) const throw()
 	verbal.append(", bureaucrat of grade ");
 	verbal.append(getStrGrade(this->_grade));
 	return (verbal);
-}
-
-const char* brt::GradeTooHighException::what( void ) const throw()
-{
-	return ("The grade of a bureaucrat was bigger than the maximum allowed");
-}
-
-const char* brt::GradeTooLowException::what( void ) const throw()
-{
-	return ("The grade of a bureaucrat was smaller than the minimum allowed");
 }
 
 std::ostream& operator<<(std::ostream& os, brt::Bureaucrat const& toPrint)

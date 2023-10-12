@@ -10,7 +10,17 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Form.hpp"
+#include "AForm.hpp"
+
+const char* brt::FormNotSignedException::what( void ) const throw()
+{
+	return ("form not signed");
+}
+
+const char* brt::FormAlreadySignedException::what( void ) const throw()
+{
+	return ("form already signed");
+}
 
 brt::AForm::~AForm( void ) throw()
 {
@@ -44,21 +54,24 @@ int brt::AForm::getGradeToExec( void ) const
 	return (this->_gradeToExec);
 }
 
-void brt::AForm::beSigned( brt::Bureaucrat& buro ) throw(brt::GradeTooLowException)
+void brt::AForm::beSigned( brt::Bureaucrat& buro ) throw(brt::GradeTooLowException, brt::FormAlreadySignedException)
 {
-	std::string errorMessage = "";
-
 	if (buro.getGrade() > this->_gradeToSign)
-	{
-		errorMessage.append(buro.toString());
-		errorMessage.append(" is too low to sign ");
-		errorMessage.append(this->toString());
-		errorMessage.append(", level required: ");
-		errorMessage.append(brt::getStrGrade(this->_gradeToSign));
-		throw(errorMessage);
-	}
+		throw(GradeTooLowException());
+	else if (this->_signed == true)
+		throw(FormAlreadySignedException());
 	else
 		this->_signed = true;
+}
+
+void brt::AForm::beExecuted( brt::Bureaucrat& buro ) throw(brt::GradeTooLowException, brt::FormAlreadySignedException)
+{
+	if (buro.getGrade() > this->_gradeToSign)
+		throw(GradeTooLowException());
+	else if (this->_signed == false)
+		throw(FormAlreadySignedException());
+	else
+		this->execute();
 }
 
 std::string 	brt::AForm::toString ( void ) const throw()
@@ -66,6 +79,7 @@ std::string 	brt::AForm::toString ( void ) const throw()
 	std::string verbal = "";
 	verbal.append("form type: ");
 	verbal.append(this->_name);
+	verbal.append(",");
 	if (this->_signed == false) 
 		verbal.append(" not");
 	verbal.append(" signed\ngrade required to sign: ");
@@ -78,8 +92,5 @@ std::string 	brt::AForm::toString ( void ) const throw()
 std::ostream& operator<<(std::ostream& os, brt::AForm const& toPrint)
 {
 	os << "form type " << toPrint.getName();
-	if (toPrint.getSign() == false) 
-		os << " not";
-	os << " signed";
 	return (os);
 }
