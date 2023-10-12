@@ -6,13 +6,14 @@
 /*   By: fra <fra@student.codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/10/12 01:12:01 by fra           #+#    #+#                 */
-/*   Updated: 2023/10/12 21:51:15 by fra           ########   odam.nl         */
+/*   Updated: 2023/10/13 00:38:45 by fra           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Bureaucrat.hpp"
-// #include "AForm.hpp"
 #include "PresidentialPardonForm.hpp"
+#include "ShrubberyCreationForm.hpp"
+#include "RobotomyRequestForm.hpp"
 
 void getGrade(int& grade)
 {
@@ -62,8 +63,7 @@ int main( void )
 	{
 		std::cout << "grade of " << buro << " is already the highest" << std::endl;
 	}
-	brt::AForm *document = new brt::forms::PresidentialPardonForm("Timoty");
-	// brt::forms::PresidentialPardonForm prova;
+	brt::AForm *document = new brt::forms::RobotomyRequestForm("Timoty");
 	std::cout << "A new form exists:\n" << document->toString() << std::endl;
 	buro.signForm(*document);
 	buro.executeForm(*document);

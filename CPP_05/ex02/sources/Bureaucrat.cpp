@@ -6,12 +6,18 @@
 /*   By: fra <fra@student.codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/10/11 21:56:38 by fra           #+#    #+#                 */
-/*   Updated: 2023/10/12 22:05:42 by fra           ########   odam.nl         */
+/*   Updated: 2023/10/13 00:30:48 by fra           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Bureaucrat.hpp"
 #include "AForm.hpp"
+
+const char* brt::GenericException::what( void ) const throw()
+{
+	std::string msg = "generic exception: " + this->_message;
+	return (msg.c_str());
+}
 
 const char* brt::GradeTooHighException::what( void ) const throw()
 {
@@ -100,7 +106,7 @@ void	brt::Bureaucrat::executeForm( brt::AForm& doc ) throw()
 		doc.beExecuted(*this);
 		std::cout << *this << " successfully executed " << doc << std::endl;
 	}
-	catch( std::exception& err )
+	catch( brt::GenericException& err )
 	{
 		std::cout << *this << " couldn’t execute " << doc << " reason: " << err.what() <<std::endl;
 	}

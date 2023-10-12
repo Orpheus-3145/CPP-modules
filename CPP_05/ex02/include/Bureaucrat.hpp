@@ -6,7 +6,7 @@
 /*   By: fra <fra@student.codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/10/11 21:35:19 by fra           #+#    #+#                 */
-/*   Updated: 2023/10/12 21:33:13 by fra           ########   odam.nl         */
+/*   Updated: 2023/10/13 00:34:45 by fra           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,28 +18,37 @@
 namespace brt
 {
 	class Bureaucrat;
+	class AForm;
+	class GenericException;
 	class GradeTooHighException;
 	class GradeTooLowException;
-	class AForm;
 	int				gradeChecker( int );
 	std::string		getStrGrade( int );
 	const int 		_maxGrade = 1;
 	const int 		_minGrade = 150;
 }
 
-class brt::GradeTooHighException : public std::exception
+class brt::GenericException : public std::exception
 {
 	public:
-		GradeTooHighException( void) : std::exception() {}
-		virtual ~GradeTooHighException() throw() { }
+		GenericException( void ) throw() : std::exception() , _message(""){}
+		GenericException( std::string const& msg ) throw() : std::exception() ,_message(msg) {}
+		virtual ~GenericException() throw() { }
+		virtual const char* what() const throw();
+
+	protected:
+		std::string const _message;
+};
+
+class brt::GradeTooHighException : public GenericException
+{
+	public:
 		virtual const char* what() const throw();
 };
 
-class brt::GradeTooLowException : public std::exception
+class brt::GradeTooLowException : public brt::GenericException
 {
 	public:
-		GradeTooLowException( void) : std::exception() {}
-		virtual ~GradeTooLowException() throw() { }
 		virtual const char* what() const throw();
 };
 

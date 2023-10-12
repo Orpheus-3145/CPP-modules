@@ -6,7 +6,7 @@
 #    By: fra <fra@student.codam.nl>                   +#+                      #
 #                                                    +#+                       #
 #    Created: 2023/10/05 22:14:15 by fra           #+#    #+#                  #
-#    Updated: 2023/10/12 16:24:21 by fra           ########   odam.nl          #
+#    Updated: 2023/10/13 00:36:29 by fra           ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -49,6 +49,10 @@ clean:
 	@for file in $(shell find $(OBJ_DIR) -type f -name '*.o'); do \
 		rm -f $$file;	\
 		printf "(C++ 05) $(RED)Removed object $$(basename $$file)$(RESET)\n"; \
+	done
+	@for file in $(shell find . -type f -name '*_shrubbery'); do \
+		rm -f $$file;	\
+		printf "(C++ 05) $(RED)Removed file $$(basename $$file)$(RESET)\n"; \
 	done
 
 fclean: clean

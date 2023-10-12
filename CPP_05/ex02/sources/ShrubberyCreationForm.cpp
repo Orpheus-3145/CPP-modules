@@ -6,7 +6,7 @@
 /*   By: fra <fra@student.codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/10/12 22:09:02 by fra           #+#    #+#                 */
-/*   Updated: 2023/10/12 22:09:41 by fra           ########   odam.nl         */
+/*   Updated: 2023/10/13 00:31:44 by fra           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,37 @@ std::string const&	brt::forms::ShrubberyCreationForm::getTarget( void ) const th
 	return (this->_target);
 }
 
-void 	brt::forms::ShrubberyCreationForm::execute( void ) const throw()
+void 	brt::forms::ShrubberyCreationForm::execute( void ) const throw(brt::GenericException)
 {
-	
+    std::string     fileName = this->_target + "_shrubbery";
+    std::fstream    ofile;
+
+	ofile.open(fileName.c_str(), std::ios::out);
+	if (ofile.is_open() == false)
+		throw std::runtime_error("File could not be opened");
+	ofile << "     _ _,---._ " << std::endl;
+	ofile << "   ,-','       `-.___ " << std::endl;
+	ofile << "  /-;'               `._ " << std::endl;
+	ofile << " /\\/          ._   _,'o \\ " << std::endl;
+	ofile << "( /\\       _,--'\\,','\"`. ) " << std::endl;
+	ofile << " |\\      ,'o     \\'    //\\ " << std::endl;
+	ofile << " |      \\        /   ,--'\"\"`-. " << std::endl;
+	ofile << " :       \\_    _/ ,-'         `-._ " << std::endl;
+	ofile << "  \\        `--'  /                ) " << std::endl;
+	ofile << "   `.  \\`._    ,'     ________,',' " << std::endl;
+	ofile << "     .--`     ,'  ,--` __\\___,;' " << std::endl;
+	ofile << "      \\`.,-- ,' ,`_)--'  /`.,' " << std::endl;
+	ofile << "       \\( ;  | | )      (`-/ " << std::endl;
+	ofile << "         `--'| |)       |-/ " << std::endl;
+	ofile << "           | | |        | | " << std::endl;
+	ofile << "           | | |,.,-.   | |_ " << std::endl;
+	ofile << "           | `./ /   )---`  ) " << std::endl;
+	ofile << "          _|  /    ,',   ,-' " << std::endl;
+	ofile << "         ,'|_(    /-<._,' |--, " << std::endl;
+	ofile << "         |    `--'---.     \\/ \\ " << std::endl;
+	ofile << "         |          / \\    /\\  \\ " << std::endl;
+	ofile << "       ,-^---._     |  \\  /  \\  \\ " << std::endl;
+	ofile << "    ,-'        \\----'   \\/    \\--`. " << std::endl;
+	ofile << "   /            \\              \\   \\ " << std::endl;
+	ofile.close();
 }
