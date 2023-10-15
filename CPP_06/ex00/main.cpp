@@ -6,7 +6,7 @@
 /*   By: fra <fra@student.codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/10/14 20:53:01 by fra           #+#    #+#                 */
-/*   Updated: 2023/10/15 20:42:33 by fra           ########   odam.nl         */
+/*   Updated: 2023/10/16 01:17:58 by fra           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 
 int main( int argc, char** argv )
 {
+	std::string tmp;
+
 	if (argc != 2)
 	{
 		std::cerr << "Error: invalid number of arguments" << std::endl;
@@ -21,39 +23,43 @@ int main( int argc, char** argv )
 	}
 	std::cout << "----------Input-----------" << std::endl;
 	ScalarConverter::convert(argv[1]);
-	std::cout << "--------------------------\n" << std::endl;
+	std::cout << "--------------------------" << std::endl;
 	std::cout << "----------Tests-----------" << std::endl;
-	ScalarConverter::convert("nan");
+	std::cout << "--------------------------\n" << std::endl;
+	tmp = "0.0";
+	std::cout << "test with: " << tmp << std::endl;
+	ScalarConverter::convert(tmp);
 	std::cout << std::endl;
-	ScalarConverter::convert("nanf");
+	std::cout << "--------------------------\n" << std::endl;
+	tmp = "0.00000f";
+	std::cout << "test with: " << tmp << std::endl;
+	ScalarConverter::convert(tmp);
 	std::cout << std::endl;
-	ScalarConverter::convert("+inf");
+	std::cout << "--------------------------\n" << std::endl;
+	tmp = "2.3.4";
+	std::cout << "test with: " << tmp << std::endl;
+	ScalarConverter::convert(tmp);
 	std::cout << std::endl;
-	ScalarConverter::convert("+inff");
+	std::cout << "--------------------------\n" << std::endl;
+	tmp = "4.56";
+	std::cout << "test with: " << tmp << std::endl;
+	ScalarConverter::convert(tmp);
 	std::cout << std::endl;
-	ScalarConverter::convert("-inf");
+	std::cout << "--------------------------\n" << std::endl;
+	tmp = "'a'";
+	std::cout << "test with: " << tmp << std::endl;
+	ScalarConverter::convert(tmp);
 	std::cout << std::endl;
-	ScalarConverter::convert("-inff");
+	std::cout << "--------------------------\n" << std::endl;
+	tmp = "a.34";
+	std::cout << "test with: " << tmp << std::endl;
+	ScalarConverter::convert(tmp);
 	std::cout << std::endl;
-	ScalarConverter::convert("0");
+	std::cout << "--------------------------\n" << std::endl;
+	tmp = "34.234f";
+	std::cout << "test with: " << tmp << std::endl;
+	ScalarConverter::convert(tmp);
 	std::cout << std::endl;
-	ScalarConverter::convert("0.1");
-	std::cout << std::endl;
-	ScalarConverter::convert("1.0f");
-	std::cout << std::endl;
-	ScalarConverter::convert("2.f");
-	std::cout << std::endl;
-	ScalarConverter::convert(".2f");
-	std::cout << std::endl;
-	ScalarConverter::convert("'a'");
-	std::cout << std::endl;
-	ScalarConverter::convert("42");
-	std::cout << std::endl;
-	ScalarConverter::convert("42.0");
-	std::cout << std::endl;
-	ScalarConverter::convert("-42.0f");
-	std::cout << std::endl;
-	ScalarConverter::convert("' '");
 	std::cout << "--------------------------\n" << std::endl;
 	return (0);
 }
