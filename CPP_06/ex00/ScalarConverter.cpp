@@ -6,7 +6,7 @@
 /*   By: fra <fra@student.codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/10/14 02:17:58 by fra           #+#    #+#                 */
-/*   Updated: 2023/10/15 20:01:13 by fra           ########   odam.nl         */
+/*   Updated: 2023/10/15 20:43:00 by fra           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ static void printDouble(double number)
 
 static void	isChar( std::string number )
 {
-	char	charNum = std::atoi(number.c_str());
+	char	charNum = number.c_str()[1];
 
 	printChar(charNum, false);
 	printInt((int) charNum, false);
@@ -75,13 +75,12 @@ static void	isFloat( std::string number )
 	bool	isOF = false;
 
 	isOF = (floatNum < 0) or (floatNum > 127) or 
-			(floatNum == std::numeric_limits<float>::infinity()) or 
-			(floatNum == -std::numeric_limits<float>::infinity()) or 
+			(std::isinf(floatNum) == true) or 
 			(std::isnan(floatNum) == true);
 	printChar((char) floatNum, isOF);
 	isOF = (floatNum < std::numeric_limits<int>::min()) or 
-			(floatNum > std::numeric_limits<int>::max()) or 
-			(floatNum == std::numeric_limits<float>::infinity()) or 
+			(floatNum > std::numeric_limits<int>::max()) or
+			(std::isinf(floatNum) == true) or
 			(std::isnan(floatNum) == true);
 	printInt((int) floatNum, isOF);
 	printFloat(floatNum);
@@ -93,15 +92,13 @@ static void	isDouble( std::string number )
 	double	doubleNum = std::strtod(number.c_str(), NULL);
 	bool	isOF = false;
 
-	isOF = (doubleNum < 0) or (doubleNum > 127) or 
-			(doubleNum == std::numeric_limits<double>::infinity()) or 
-			(doubleNum == -std::numeric_limits<double>::infinity()) or 
+	isOF = (doubleNum < 0) or (doubleNum > 127) or
+			(std::isinf(doubleNum) == true) or
 			(std::isnan(doubleNum) == true);
 	printChar((char) doubleNum, isOF);
 	isOF = (doubleNum < std::numeric_limits<int>::min()) or 
 			(doubleNum > std::numeric_limits<int>::max()) or 
-			(doubleNum == std::numeric_limits<double>::infinity()) or 
-			(doubleNum == -std::numeric_limits<double>::infinity()) or 
+			(std::isinf(doubleNum) == true) or
 			(std::isnan(doubleNum) == true);
 	printInt((int) doubleNum, isOF);
 	printFloat( (float) doubleNum);
@@ -110,7 +107,6 @@ static void	isDouble( std::string number )
 
 void	ScalarConverter::convert( std::string const& number )
 {
-	// check number?
 	if ((number.compare("-inff") == 0) or
 		(number.compare("+inff") == 0) or
 		(number.compare("nanf") == 0))
