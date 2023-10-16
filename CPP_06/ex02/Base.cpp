@@ -6,7 +6,7 @@
 /*   By: fra <fra@student.codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/10/16 15:50:31 by fra           #+#    #+#                 */
-/*   Updated: 2023/10/16 16:28:27 by fra           ########   odam.nl         */
+/*   Updated: 2023/10/16 16:32:28 by fra           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,9 @@ void		Base::identify(Base* ptr)
 		std::cout << "Pointer of class B" << std::endl;
 	else if (dynamic_cast<C*>(ptr))
 		std::cout << "Pointer of class C" << std::endl;
+	else
+		std::cout << "Pointer doesn't belong to neither A, B or C" << std::endl;
+
 }
 
 void		Base::identify(Base& ptr)
@@ -70,4 +73,5 @@ void		Base::identify(Base& ptr)
 		return;
 	}
 	catch (...) {}
+	std::cout << "Reference doesn't belong to neither A, B or C" << std::endl;
 }
