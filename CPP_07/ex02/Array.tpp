@@ -6,7 +6,7 @@
 /*   By: fra <fra@student.codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/10/16 23:49:02 by fra           #+#    #+#                 */
-/*   Updated: 2023/10/17 00:46:11 by fra           ########   odam.nl         */
+/*   Updated: 2023/10/17 21:23:25 by fra           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,27 +15,27 @@
 template <typename T>
 Array<T>::Array( void )
 {
-    this->nItems = 0;
+    this->_nItems = 0;
     this->_items = new T[0];
 }
 
 template <typename T>
 Array<T>::Array( unsigned int n) throw(std::exception)
 {
-    this->nItems = n;
-    this->_items = new T(this->nItems);
+    this->_nItems = n;
+    this->_items = new T[this->_nItems];
     if (this->_items == NULL)
         throw(std::exception());
 }
 
 template <typename T>
-Array<T>::Array( Array<T> const& other) throw(std::exception)
+Array<T>::Array( Array<T>& other) throw(std::exception)
 {
-    this->nItems = other.size();
-    this->_items = new T(this->nItems);
+    this->_nItems = other.size();
+    this->_items = new T[this->_nItems];
     if (this->_items == NULL)
         throw(std::exception());
-    for (unsigned int i = 0; i < this->nItems; i++)
+    for (unsigned int i = 0; i < this->_nItems; i++)
         this->_items[i] = other[i];
 }
 
@@ -46,7 +46,7 @@ Array<T>::~Array( void ) throw()
 }
 
 template <typename T>
-Array<T>&	Array<T>::operator=( Array<T> const& other ) throw(std::exception)
+Array<T>&	Array<T>::operator=( Array<T>& other ) throw(std::exception)
 {
     unsigned int    newSize;
     T*              tmp;
@@ -54,7 +54,7 @@ Array<T>&	Array<T>::operator=( Array<T> const& other ) throw(std::exception)
     if (this != &other)
     {
         newSize = other.size();
-        if (this->nItems != newSize)
+        if (this->_nItems != newSize)
         {
             tmp = new T(newSize);
             if (tmp == NULL)
@@ -69,16 +69,16 @@ Array<T>&	Array<T>::operator=( Array<T> const& other ) throw(std::exception)
             for (unsigned int i = 0; i < newSize; i++)
                 tmp[i] = other[i];
         }
-        this->nItems = newSize;
+        this->_nItems = newSize;
         this->_items = tmp;
     }
     return (*this);
 }
 
 template <typename T>
-Array<T>&		Array<T>::operator[]( int index ) throw(std::exception)
+T&		Array<T>::operator[]( int index ) throw(std::exception)
 {
-    if ((index < 0) or ((unsigned int) index >= this->nItems))
+    if ((index < 0) or ((unsigned int) index >= this->_nItems))
         throw(std::exception());
     return (this->_items[index]);
 }
@@ -86,5 +86,5 @@ Array<T>&		Array<T>::operator[]( int index ) throw(std::exception)
 template <typename T>
 unsigned int	Array<T>::size( void ) const throw()
 {
-    return (this->nItems);
+    return (this->_nItems);
 }
