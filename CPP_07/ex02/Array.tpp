@@ -6,7 +6,7 @@
 /*   By: fra <fra@student.codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/10/16 23:49:02 by fra           #+#    #+#                 */
-/*   Updated: 2023/10/17 21:23:25 by fra           ########   odam.nl         */
+/*   Updated: 2023/10/21 03:07:31 by fra           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ Array<T>::Array( void )
 }
 
 template <typename T>
-Array<T>::Array( unsigned int n) throw(std::exception)
+Array<T>::Array( unsigned int n ) throw(std::exception)
 {
     this->_nItems = n;
     this->_items = new T[this->_nItems];
@@ -29,7 +29,7 @@ Array<T>::Array( unsigned int n) throw(std::exception)
 }
 
 template <typename T>
-Array<T>::Array( Array<T>& other) throw(std::exception)
+Array<T>::Array( Array<T>& other ) throw(std::exception)
 {
     this->_nItems = other.size();
     this->_items = new T[this->_nItems];
