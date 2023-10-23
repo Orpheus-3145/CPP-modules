@@ -6,7 +6,7 @@
 #    By: fra <fra@student.codam.nl>                   +#+                      #
 #                                                    +#+                       #
 #    Created: 2023/10/05 21:08:47 by fra           #+#    #+#                  #
-#    Updated: 2023/10/21 05:07:53 by fra           ########   odam.nl          #
+#    Updated: 2023/10/23 17:56:44 by fra           ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,7 +16,7 @@ SOURCES := $(wildcard *.cpp)
 EXE := main
 
 PP := g++
-PP_FLAGS := -std=c++98 -Wall -Wextra -Werror -Wshadow -Wpedantic -g3 -fsanitize=address
+PP_FLAGS := -Wall -Wextra -Werror -Wshadow -Wpedantic -g3 -fsanitize=address
 
 GREEN = \x1b[32;01m
 RED = \x1b[31;01m
