@@ -6,7 +6,7 @@
 /*   By: fra <fra@student.codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/10/24 21:40:30 by fra           #+#    #+#                 */
-/*   Updated: 2023/10/25 00:46:58 by fra           ########   odam.nl         */
+/*   Updated: 2023/10/25 02:26:19 by fra           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,11 @@
 #include <map>
 #include <sstream>
 #include <iostream>
+#include <fstream>
 #include <iomanip>
+#include <string>
 #include <ctime>
+#define DATA_PATH "./data.csv"
 
 class BitException : std::exception
 {
@@ -33,9 +36,10 @@ class BitcoinExchange
 	typedef std::map<time_t, float> data_t;
 
 	public:
-		BitcoinExchange( void ) noexcept;
+		BitcoinExchange( void ) noexcept {}
+		BitcoinExchange( std::string ) noexcept;
 		BitcoinExchange( BitcoinExchange const& ) noexcept;
-		~BitcoinExchange( void ) noexcept;
+		~BitcoinExchange( void ) noexcept {}
 		BitcoinExchange& operator=(BitcoinExchange const&) noexcept;
 
 		static time_t	getTimestamp(std::string to_cast) noexcept;
@@ -43,10 +47,18 @@ class BitcoinExchange
 		static bool isDate(std::string toCheck) noexcept;
 		static bool isValue(std::string toCheck) noexcept;
 
-		data_t	getDatabase( void ) const ;
-		void	setDatabase( data_t const& );
-		void	parseDB(std::string file_path);
+		data_t const		getDatabase( void ) const ;
+		void				setDatabase( data_t const& );
+		std::string const&	getInputFile( void ) const ;
+		void				setInputFile( std::string const& );
+
+		void	fillData(std::string file_path);
+		float	getValueByDate( time_t ) const ;
+		bool	checkInputFile( std::string ) const ;
+
+		void	_addNewItem( std::string, std::string );
 
 	private:
-		data_t _database;
+		data_t		_database;
+		std::string	_inputFile;
 };
