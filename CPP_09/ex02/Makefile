@@ -6,14 +6,14 @@
 #    By: fra <fra@student.codam.nl>                   +#+                      #
 #                                                    +#+                       #
 #    Created: 2023/10/05 21:08:47 by fra           #+#    #+#                  #
-#    Updated: 2023/10/25 19:52:07 by fra           ########   odam.nl          #
+#    Updated: 2023/10/25 19:51:26 by fra           ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
 SHELL := /bin/bash
 
 SOURCES := $(wildcard *.cpp)
-EXE := RPN
+EXE := PmergeMe
 
 PP := g++
 PP_FLAGS := -Wall -Wextra -Werror -Wshadow -Wpedantic -g3 -fsanitize=address
@@ -28,7 +28,7 @@ all: $(SOURCES)
 
 run: all
 	@clear
-	@./$(EXE) "8 9 * 9 - 9 - 9 - 4 - 1 +" "7 7 * 7 -" "1 2 * 2 / 2 * 2 4 - +" "(1 + 1)"
+	@./$(EXE)
 
 clean:
 	@rm -f $(EXE)
