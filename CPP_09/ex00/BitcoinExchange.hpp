@@ -6,7 +6,7 @@
 /*   By: fra <fra@student.codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/10/24 21:40:30 by fra           #+#    #+#                 */
-/*   Updated: 2023/10/25 02:26:19 by fra           ########   odam.nl         */
+/*   Updated: 2023/10/25 17:13:01 by fra           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,28 +37,30 @@ class BitcoinExchange
 
 	public:
 		BitcoinExchange( void ) noexcept {}
-		BitcoinExchange( std::string ) noexcept;
+		BitcoinExchange( std::string, std::string ) noexcept;
 		BitcoinExchange( BitcoinExchange const& ) noexcept;
 		~BitcoinExchange( void ) noexcept {}
 		BitcoinExchange& operator=(BitcoinExchange const&) noexcept;
 
-		static time_t	getTimestamp(std::string to_cast) noexcept;
-		static float	getValue(std::string strValue) noexcept;
-		static bool isDate(std::string toCheck) noexcept;
-		static bool isValue(std::string toCheck) noexcept;
+		static time_t	getTimestamp(std::string, bool);
+		static float	getValue(std::string, bool);
 
-		data_t const		getDatabase( void ) const ;
-		void				setDatabase( data_t const& );
-		std::string const&	getInputFile( void ) const ;
-		void				setInputFile( std::string const& );
+		data_t const		getDatabase( void ) const noexcept;
+		void				setDatabase( data_t const& ) noexcept;
+		std::string const&	getDbPath( void ) const noexcept;
+		void				setDbPath( std::string const& ) noexcept;
+		std::string const&	getInputFile( void ) const noexcept;
+		void				setInputFile( std::string const& ) noexcept;
 
-		void	fillData(std::string file_path);
-		float	getValueByDate( time_t ) const ;
-		bool	checkInputFile( std::string ) const ;
+		void	fillData( void ) noexcept;
+		void	readInput( void ) const noexcept;
 
-		void	_addNewItem( std::string, std::string );
+		float	_getAmountByDate( time_t ) const noexcept;
+		void	_addNewItem( time_t, float ) noexcept;
+		void	_printLine( std::string ) const ;
 
 	private:
 		data_t		_database;
-		std::string	_inputFile;
+		std::string	_dbPath;
+		std::string	_inputFilePath;
 };

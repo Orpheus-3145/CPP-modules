@@ -6,7 +6,7 @@
 /*   By: fra <fra@student.codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/10/25 00:43:46 by fra           #+#    #+#                 */
-/*   Updated: 2023/10/25 02:26:55 by fra           ########   odam.nl         */
+/*   Updated: 2023/10/25 17:30:26 by fra           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,120 +14,181 @@
 
 typedef std::map<time_t, float> data_t;
 
-BitcoinExchange::BitcoinExchange( std::string inputFile ) noexcept :
-	_inputFile(inputFile) {}
+BitcoinExchange::BitcoinExchange( std::string dbPath, std::string inputFilePath ) noexcept :
+	_dbPath(dbPath) , _inputFilePath(inputFilePath) {}
 
 BitcoinExchange::BitcoinExchange( BitcoinExchange const& other ) noexcept :
-	_database(other.getDatabase()) , _inputFile(other.getInputFile()) {}
+	_database(other.getDatabase()) , _dbPath(other.getDbPath()) , _inputFilePath(other.getInputFile()) {}
 
 BitcoinExchange& BitcoinExchange::operator=(BitcoinExchange const& other) noexcept
 {
 	if (this != &other )
 	{
 		this->_database = other.getDatabase();
-		this->_inputFile = other.getInputFile();
+		this->_dbPath = other.getDbPath();
+		this->_inputFilePath = other.getInputFile();
 	}
 	return (*this);
 }
 
-time_t	BitcoinExchange::getTimestamp(std::string to_cast) noexcept
+time_t	BitcoinExchange::getTimestamp(std::string to_cast, bool checkInput)
 {
+	if (checkInput)
+	{
+		if (to_cast.length() != 10)
+			throw(BitException("invalid date format"));
+		for (char check : to_cast)
+		{
+			if ((check != '-') and (std::isdigit(check) == 0))
+				throw(BitException("invalid date"));
+		}
+	}
 	std::tm t = {};
 	std::istringstream dateStream(to_cast);
 	dateStream >> std::get_time(&t, "%Y-%m-%d");
 	return (std::mktime(&t));
 }
 
-float	BitcoinExchange::getValue(std::string strValue) noexcept
+float	BitcoinExchange::getValue(std::string strValue, bool checkInput)
 {
 	std::istringstream floatStream(strValue);
 	float value;
 	floatStream >> value;
+	if (checkInput)
+	{
+		if (floatStream.fail() or !floatStream.eof())
+			throw(BitException("invalid number"));
+		else if ((value < 0.f) or (value > 1000.f))
+			throw(BitException("number out of bounds [0 - 1000]"));
+	}
 	return (value);
 }
 
-bool BitcoinExchange::isDate(std::string toCheck) noexcept
-{
-	if (toCheck.length() != 10)
-		return (false);
-	for (char check : toCheck)
-	{
-		if ((check != '-') and (std::isdigit(check) != 0))
-			return (false);
-	}
-	return (true);
-}
-
-bool BitcoinExchange::isValue(std::string toCheck) noexcept
-{
-	std::istringstream stream(toCheck);
-	float tmp;
-	stream >> tmp;
-	return (!stream.fail() and stream.eof());
-}
-
-data_t const	BitcoinExchange::getDatabase( void ) const 
+data_t const	BitcoinExchange::getDatabase( void ) const noexcept 
 {
 	return (this->_database);
 }
 
-void	BitcoinExchange::setDatabase( data_t const& newDB )
+void	BitcoinExchange::setDatabase( data_t const& newDB ) noexcept
 {
 	this->_database = newDB;
 }
 
-std::string const&	BitcoinExchange::getInputFile( void ) const 
+std::string const&	BitcoinExchange::getDbPath( void ) const noexcept 
 {
-	return(this->_inputFile);
+	return(this->_dbPath);
 }
 
-void				BitcoinExchange::setInputFile( std::string const& newInputFile)
+void	BitcoinExchange::setDbPath( std::string const& newDbPath) noexcept
 {
-	this->_inputFile = newInputFile;
+	this->_dbPath = newDbPath;
 }
 
-void	BitcoinExchange::fillData(std::string file_path)
+std::string const&	BitcoinExchange::getInputFile( void ) const noexcept
 {
-	std::ifstream	readDB(file_path);
+	return(this->_inputFilePath);
+}
+
+void	BitcoinExchange::setInputFile( std::string const& newInputFile) noexcept
+{
+	this->_inputFilePath = newInputFile;
+}
+
+void	BitcoinExchange::fillData( void ) noexcept
+{
+	std::ifstream	readDB(this->_dbPath);
 	std::string		line;
 	std::string		dateStr;
 	std::string		amountStr;
 	size_t  		commaPos;
 
 	if (!readDB.is_open())
-		throw(BitException(std::string("Error opening file: ") + file_path));
+	{
+		std::cerr <<"error opening file: " << this->_dbPath << std::endl;
+		return ;
+	}
 	std::getline(readDB, line);		// skip header line
 	while (std::getline(readDB, line))
 	{
 		commaPos = line.find(",");
 		dateStr = line.substr(0, commaPos);
 		amountStr = line.substr(commaPos + 1);
-		_addNewItem(dateStr, amountStr);
+		_addNewItem(getTimestamp(dateStr, false), getValue(amountStr, false));
 	}
 	readDB.close();
-	for (auto item : this->_database)
+}
+
+void	BitcoinExchange::readInput( void ) const noexcept
+{
+	if (this->_database.empty() == true)
 	{
-		char buffer[11];
-		std::tm* timeinfo = std::localtime(&item.first);
-		std::strftime(buffer, sizeof(buffer), "%Y-%m-%d", timeinfo);
-    	std::cout << buffer  << "," << item.second << std::endl;
-		// std::cout << item.first << "," << item.second << std::endl;
+		std::cerr <<"app error: empty database" << std::endl;
+		return ;
+	}
+
+	std::ifstream	readInput(this->_inputFilePath);
+	std::string 	line;
+	if (!readInput.is_open())
+	{
+		std::cerr <<"error opening file: " << this->_inputFilePath << std::endl;
+		return ;
+	}
+	std::getline(readInput, line);		// skip header line
+	while (std::getline(readInput, line))
+	{
+		try
+		{
+			this->_printLine(line);
+		}
+		catch(BitException const& e)
+		{
+			std::cout <<"parse error: " << e.what() << std::endl;
+		}
+	}
+	readInput.close();
+}
+
+float	BitcoinExchange::_getAmountByDate( time_t ts ) const noexcept
+{
+	try
+	{
+		return(this->_database.at(ts));
+	}
+	catch(const std::out_of_range& e)
+	{
+		ts -= 86400;
+		return (_getAmountByDate(ts));
 	}
 }
 
-float	BitcoinExchange::getValueByDate( time_t ) const
+void	BitcoinExchange::_printLine(std::string line) const
 {
-	return (0.0);
+	std::string		dateStr;
+	time_t			timestamp;
+	std::string		valueStr;
+	float			value;
+	float			amount;
+	size_t  		pipePos;
+
+	pipePos = line.find("|");
+	if (line.find("|") == std::string::npos)
+		throw(BitException("invalid line input"));
+	dateStr = line.substr(0, pipePos - 1);
+	valueStr = line.substr(pipePos + 2);
+	try
+	{
+		timestamp = this->getTimestamp(dateStr, true);
+		value = this->getValue(valueStr, true);
+	}
+	catch(BitException const& e)
+	{
+		throw(BitException(e));
+	}
+	amount = this->_getAmountByDate(timestamp);
+	std::cout << dateStr << " --> " << valueStr << ": " << amount * value << std::endl;
 }
 
-bool	BitcoinExchange::checkInputFile( std::string ) const
+void	BitcoinExchange::_addNewItem( time_t timestamp, float amount ) noexcept
 {
-	return (true);
-}
-
-void	BitcoinExchange::_addNewItem( std::string dateStr, std::string amountStr )
-{
-	time_t	timestamp = getTimestamp(dateStr);
-	float	amount = getValue(amountStr);
 	this->_database.insert(std::pair<time_t,float>(timestamp, amount));
 }

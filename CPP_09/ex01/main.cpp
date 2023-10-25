@@ -5,22 +5,22 @@
 /*                                                     +:+                    */
 /*   By: fra <fra@student.codam.nl>                   +#+                     */
 /*                                                   +#+                      */
-/*   Created: 2023/10/24 23:37:47 by fra           #+#    #+#                 */
-/*   Updated: 2023/10/25 17:06:26 by fra           ########   odam.nl         */
+/*   Created: 2023/10/25 18:54:20 by fra           #+#    #+#                 */
+/*   Updated: 2023/10/25 19:16:08 by fra           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "BitcoinExchange.hpp"
+#include "RPN.hpp"
 
 int main( int argc, char** argv )
 {
-	if (argc != 2)
+	if (argc < 2)
 	{
-		std::cout << "invalid arguments, input file requested" << std::endl;
+		std::cout << "insuffient arguments" << std::endl;
 		return (0);
 	}
-	BitcoinExchange btcApp(DATA_PATH, argv[1]);
-	btcApp.fillData();
-	btcApp.readInput();
+	RPN parser;
+	for (int i = 1; i < argc; i++)
+		parser.printResult(argv[i]);
 	return (0);
 }
