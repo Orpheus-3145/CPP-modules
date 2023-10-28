@@ -6,7 +6,7 @@
 /*   By: fra <fra@student.codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/10/27 20:47:53 by fra           #+#    #+#                 */
-/*   Updated: 2023/10/28 03:11:58 by fra           ########   odam.nl         */
+/*   Updated: 2023/10/28 03:58:55 by fra           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ class PmergeMe
 		void				setString( std::string const& ) noexcept ;
 		
 		void							checkInput( std::string ) const ;
-		template <typename Cont> void	sortInput( void ) const noexcept {}
+		template <typename Cont> void	sort( Cont const& ) const noexcept {}
 
 		std::vector<int>	_toVector( void ) const noexcept ;
 		std::list<int>		_toList( void ) const noexcept ;

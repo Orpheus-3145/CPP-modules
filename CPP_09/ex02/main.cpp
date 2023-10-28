@@ -6,7 +6,7 @@
 /*   By: fra <fra@student.codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/10/27 22:11:43 by fra           #+#    #+#                 */
-/*   Updated: 2023/10/28 03:50:43 by fra           ########   odam.nl         */
+/*   Updated: 2023/10/28 03:58:55 by fra           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,8 @@ int main(int argc, char** argv)
 		std::cerr <<"Error: " << e.what() << std::endl;
 		return (1);
 	}
-	merger.sortInput<std::vector<int> >();
+	merger.sort<std::vector<int> >(vectInput);
+	merger.sort<std::list<int> >(listInput);
 
 	std::vector<int> tmp;
 	int ins;

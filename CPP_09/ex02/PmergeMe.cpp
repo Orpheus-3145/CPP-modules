@@ -6,7 +6,7 @@
 /*   By: fra <fra@student.codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/10/27 21:21:03 by fra           #+#    #+#                 */
-/*   Updated: 2023/10/28 03:53:02 by fra           ########   odam.nl         */
+/*   Updated: 2023/10/28 03:58:55 by fra           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,9 +61,8 @@ void		PmergeMe::checkInput( std::string input ) const
 }
 
 template <>
-void PmergeMe::sortInput<std::vector<int> >( void ) const noexcept
+void PmergeMe::sort<std::vector<int> >( std::vector<int> const& vectInput ) const noexcept
 {
-	std::vector<int>	vectInput = this->_toVector();
 	unsigned int		nPairs = vectInput.size() / 2;
 	std::vector<int>	sorted;
 	std::vector<int>	toSort;
@@ -104,9 +103,8 @@ void PmergeMe::sortInput<std::vector<int> >( void ) const noexcept
 }
 
 template <>
-void PmergeMe::sortInput<std::list<int> >( void ) const noexcept
+void PmergeMe::sort<std::list<int> >( std::list<int> const& listInput ) const noexcept
 {
-	std::list<int>		listInput = this->_toList();
 }
 
 std::vector<int>	PmergeMe::_toVector( void ) const noexcept 
