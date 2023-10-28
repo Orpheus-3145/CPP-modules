@@ -6,7 +6,7 @@
 /*   By: fra <fra@student.codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/10/25 18:21:22 by fra           #+#    #+#                 */
-/*   Updated: 2023/10/25 19:36:02 by fra           ########   odam.nl         */
+/*   Updated: 2023/10/27 20:56:13 by fra           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,5 +68,5 @@ bool	RPN::_checkInput( std::string input ) const
 		if (std::string("0123456789 +-*/").find(symbol) == std::string::npos)
 			return (false);
 	}
-	return (true);
+	return (!input.empty());
 }
