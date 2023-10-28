@@ -6,7 +6,7 @@
 /*   By: fra <fra@student.codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/10/27 21:21:03 by fra           #+#    #+#                 */
-/*   Updated: 2023/10/28 03:58:55 by fra           ########   odam.nl         */
+/*   Updated: 2023/10/28 04:00:34 by fra           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,6 @@ void PmergeMe::sort<std::vector<int> >( std::vector<int> const& vectInput ) cons
 	unsigned int		nPairs = vectInput.size() / 2;
 	std::vector<int>	sorted;
 	std::vector<int>	toSort;
-	std::vector<pair>	tmp;
 
 	for (unsigned int i=0; i<nPairs; i++)
 	{
@@ -84,19 +83,6 @@ void PmergeMe::sort<std::vector<int> >( std::vector<int> const& vectInput ) cons
 	if (vectInput.size() % 2)
 		sorted.push_back(vectInput.back());
 	std::sort(sorted.begin(), sorted.end());
-	// for (unsigned int i=0; i<nPairs;)
-	// {
-	// 	int toInsert = toSort[this->_generateJacobsthal(i)]
-	// }
-	// std::cout << this->_inputString << std::endl;
-	// for (auto tmp1 : tmp)
-	// 	std::cout << std::setw(9) <<tmp1.first;
-	// // if (last != -1)
-	// // 	std::cout << std::setw(9) << last;
-	// std::cout << std::endl;
-	// for (auto tmp1 : tmp)
-	// 	std::cout << std::setw(9) << tmp1.second;
-	// std::cout << std::endl;
 	// for (auto tmp1 : sorted)
 	// 	std::cout << std::setw(4) << tmp1;
 	// std::cout << std::endl;
