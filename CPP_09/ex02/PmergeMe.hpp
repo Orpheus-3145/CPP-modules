@@ -6,7 +6,7 @@
 /*   By: fra <fra@student.codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/10/27 20:47:53 by fra           #+#    #+#                 */
-/*   Updated: 2023/10/28 03:58:55 by fra           ########   odam.nl         */
+/*   Updated: 2023/10/29 23:23:13 by fra           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,8 +48,8 @@ class PmergeMe
 
 		std::vector<int>	_toVector( void ) const noexcept ;
 		std::list<int>		_toList( void ) const noexcept ;
-		int					_generateJacobsthal( int ) const noexcept ;
-		void				_binaryInsert( std::vector<int>&, int ) const noexcept;
+		unsigned int		_getJacobIndex( int ) const noexcept ;
+		void				_binaryInsert( std::vector<int>&, int, unsigned int, unsigned int ) const noexcept;
 
 	private:
 		std::string _inputString;

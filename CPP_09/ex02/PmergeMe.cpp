@@ -6,7 +6,7 @@
 /*   By: fra <fra@student.codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/10/27 21:21:03 by fra           #+#    #+#                 */
-/*   Updated: 2023/10/28 04:00:34 by fra           ########   odam.nl         */
+/*   Updated: 2023/10/30 00:30:22 by fra           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,9 @@ void PmergeMe::sort<std::vector<int> >( std::vector<int> const& vectInput ) cons
 	unsigned int		nPairs = vectInput.size() / 2;
 	std::vector<int>	sorted;
 	std::vector<int>	toSort;
+	unsigned int		index;
+	unsigned int		currJacobIndex;
+	unsigned int		nextJacobIndex;
 
 	for (unsigned int i=0; i<nPairs; i++)
 	{
@@ -82,15 +85,40 @@ void PmergeMe::sort<std::vector<int> >( std::vector<int> const& vectInput ) cons
 	}
 	if (vectInput.size() % 2)
 		sorted.push_back(vectInput.back());
+	// std::cout << "sorted (pre)" << "\n";
+	// for (auto item : sorted)
+	// 	std::cout << item << "\t";
 	std::sort(sorted.begin(), sorted.end());
-	// for (auto tmp1 : sorted)
-	// 	std::cout << std::setw(4) << tmp1;
-	// std::cout << std::endl;
+	std::cout << "\nsorted (after)" << "\n";
+	for (auto item : sorted)
+		std::cout << item << "\t";
+	std::cout << "\nto sort" << "\n";
+	for (auto item : toSort)
+		std::cout << item << "\t";
+	std::cout << "\n";
+	index = 2;
+	currJacobIndex = PmergeMe::_getJacobIndex(index) - 1;
+	PmergeMe::_binaryInsert(sorted, toSort[currJacobIndex], 0, 1);
+	// std::cout << "added: " << toSort[currJacobIndex] << "\n";
+	do
+	{
+		index++;
+		nextJacobIndex = PmergeMe::_getJacobIndex(index) - 1;
+		if (nextJacobIndex < nPairs)
+			PmergeMe::_binaryInsert(sorted, toSort[nextJacobIndex], 0, nextJacobIndex - 1);
+		for (int j=currJacobIndex + 1; j < std::min<int>(nextJacobIndex, nPairs); j++)
+			PmergeMe::_binaryInsert(sorted, toSort[j], 0, nextJacobIndex - 1);
+		currJacobIndex = nextJacobIndex;
+	} while (currJacobIndex < nPairs - 1);
+	for (auto item : sorted)
+		std::cout << item << "  ";
+	std::cout << std::endl;
 }
 
 template <>
 void PmergeMe::sort<std::list<int> >( std::list<int> const& listInput ) const noexcept
 {
+	(void)listInput;
 }
 
 std::vector<int>	PmergeMe::_toVector( void ) const noexcept 
@@ -129,28 +157,51 @@ std::list<int>		PmergeMe::_toList( void ) const noexcept
 	return (list);
 }
 
-int		PmergeMe::_generateJacobsthal( int index ) const noexcept
+unsigned int		PmergeMe::_getJacobIndex( int index ) const noexcept
 {
 	if (index == 0)
-		return (1);
+		return (0);
 	else if (index == 1)
-		return (3);
+		return (1);
 	else
-		return ( _generateJacobsthal(index - 1) + _generateJacobsthal(index - 2) * 2);
+		return ( _getJacobIndex(index - 1) + _getJacobIndex(index - 2) * 2);
 }
 
-void	PmergeMe::_binaryInsert(std::vector<int>& vect, int newItem) const noexcept
+void	PmergeMe::_binaryInsert(std::vector<int>& vect, int newItem, unsigned int start, unsigned int end) const noexcept
 {
-	int start, mid, end;
-	std::vector<int>::iterator iter = vect.begin();
-
-	start = 0;
-	end = vect.size() - 1;
+	// int start, mid, end;
+	int mid;
+	std::vector<int>::iterator it_start = vect.begin() + start;
+	std::vector<int>::iterator it_end = it_start + end;
+	(void)start; (void) end;
+	// start = 0;
+	// end = vect.size() - 1;
 	std::cout << "insert: " << newItem << "\n";
-	while (end != 1)
+	int i=0;
+	while (true)
 	{
 		mid = start + end / 2;
+		if (iter[mid] > newItem)
+		{
+
+		}
+		else if (iter[mid] < newItem)
+		{
+
+		}
+		else
+			break;
 	}
 	iter += mid + 1;
 	vect.insert(iter, newItem);
+	// auto it=vect.begin();
+	// for (; it != vect.end(); it++)
+	// {
+	// 	if (*it > newItem)
+	// 	{
+	// 		vect.insert(it, newItem);
+	// 		return;
+	// 	}
+	// }
+	// vect.insert(it, newItem);
 }
