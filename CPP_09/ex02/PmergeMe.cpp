@@ -6,7 +6,7 @@
 /*   By: fra <fra@student.codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/10/27 21:21:03 by fra           #+#    #+#                 */
-/*   Updated: 2023/10/30 00:30:22 by fra           ########   odam.nl         */
+/*   Updated: 2023/10/30 15:37:10 by faru          ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,7 @@ template <>
 void PmergeMe::sort<std::vector<int> >( std::vector<int> const& vectInput ) const noexcept
 {
 	unsigned int		nPairs = vectInput.size() / 2;
+	std::vector<std::pair<int,int> > vectPairs;
 	std::vector<int>	sorted;
 	std::vector<int>	toSort;
 	unsigned int		index;
@@ -72,33 +73,25 @@ void PmergeMe::sort<std::vector<int> >( std::vector<int> const& vectInput ) cons
 
 	for (unsigned int i=0; i<nPairs; i++)
 	{
-		if (vectInput[i * 2] > vectInput[i * 2 + 1])
-		{
-			sorted.push_back(vectInput[i * 2]);
-			toSort.push_back(vectInput[i * 2 + 1]);
-		}
-		else
-		{
-			sorted.push_back(vectInput[i * 2 + 1]);
-			toSort.push_back(vectInput[i * 2]);
-		}
+		vectPairs.push_back(std::pair<int,int>({vectInput[i * 2], vectInput[i * 2 + 1]}))
+		// if (vectInput[i * 2] > vectInput[i * 2 + 1])
+		// {
+		// 	sorted.push_back(vectInput[i * 2]);
+		// 	toSort.push_back(vectInput[i * 2 + 1]);
+		// }
+		// else
+		// {
+		// 	sorted.push_back(vectInput[i * 2 + 1]);
+		// 	toSort.push_back(vectInput[i * 2]);
+		// }
 	}
 	if (vectInput.size() % 2)
-		sorted.push_back(vectInput.back());
-	// std::cout << "sorted (pre)" << "\n";
-	// for (auto item : sorted)
-	// 	std::cout << item << "\t";
-	std::sort(sorted.begin(), sorted.end());
-	std::cout << "\nsorted (after)" << "\n";
-	for (auto item : sorted)
-		std::cout << item << "\t";
-	std::cout << "\nto sort" << "\n";
-	for (auto item : toSort)
-		std::cout << item << "\t";
-	std::cout << "\n";
+		toSort.push_back(vectInput.back());
+	std::sort(sorted.begin(), sorted.end(), [] );
 	index = 2;
 	currJacobIndex = PmergeMe::_getJacobIndex(index) - 1;
-	PmergeMe::_binaryInsert(sorted, toSort[currJacobIndex], 0, 1);
+	// PmergeMe::_binaryInsert(sorted, toSort[currJacobIndex], sorted.begin(), std::next(sorted.begin(), ));
+	sorted.insert(toSort[currJacobIndex])
 	// std::cout << "added: " << toSort[currJacobIndex] << "\n";
 	do
 	{
@@ -114,7 +107,6 @@ void PmergeMe::sort<std::vector<int> >( std::vector<int> const& vectInput ) cons
 		std::cout << item << "  ";
 	std::cout << std::endl;
 }
-
 template <>
 void PmergeMe::sort<std::list<int> >( std::list<int> const& listInput ) const noexcept
 {
@@ -169,39 +161,7 @@ unsigned int		PmergeMe::_getJacobIndex( int index ) const noexcept
 
 void	PmergeMe::_binaryInsert(std::vector<int>& vect, int newItem, unsigned int start, unsigned int end) const noexcept
 {
-	// int start, mid, end;
-	int mid;
-	std::vector<int>::iterator it_start = vect.begin() + start;
-	std::vector<int>::iterator it_end = it_start + end;
-	(void)start; (void) end;
-	// start = 0;
-	// end = vect.size() - 1;
-	std::cout << "insert: " << newItem << "\n";
-	int i=0;
-	while (true)
-	{
-		mid = start + end / 2;
-		if (iter[mid] > newItem)
-		{
-
-		}
-		else if (iter[mid] < newItem)
-		{
-
-		}
-		else
-			break;
-	}
-	iter += mid + 1;
+	(void) 
+	std::vector<int>::iterator iter = std::upper_bound(vect.begin(), vect.end(), newItem);
 	vect.insert(iter, newItem);
-	// auto it=vect.begin();
-	// for (; it != vect.end(); it++)
-	// {
-	// 	if (*it > newItem)
-	// 	{
-	// 		vect.insert(it, newItem);
-	// 		return;
-	// 	}
-	// }
-	// vect.insert(it, newItem);
 }
