@@ -6,7 +6,7 @@
 /*   By: fra <fra@student.codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/10/27 21:21:03 by fra           #+#    #+#                 */
-/*   Updated: 2023/10/31 15:22:09 by faru          ########   odam.nl         */
+/*   Updated: 2023/10/31 18:53:27 by faru          ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,11 @@ void PmergeMe::sort<std::vector<int> >( std::vector<int> const& vectInput ) cons
 	unsigned int		currJacobIndex;
 	unsigned int		nextJacobIndex;
 
+	std::cout << "not sorted: ";
+	for (auto item : vectInput)
+		std::cout << item << "  ";
+	std::cout << std::endl;
+	auto start = std::chrono::high_resolution_clock::now();
 	for (unsigned int i=0; i<nPairs; i++)
 	{
 		if (vectInput[i * 2] > vectInput[i * 2 + 1])
@@ -80,25 +85,14 @@ void PmergeMe::sort<std::vector<int> >( std::vector<int> const& vectInput ) cons
 			vectPairs.push_back(pair({vectInput[i * 2 + 1], vectInput[i * 2]}));
 	}
 	std::sort(vectPairs.begin(), vectPairs.end(), [] (pair const& x, pair const& y) -> bool {return(x.first > y.first);} );
-	for (int i=nPairs - 1; i>=0; i--)
+	for (int i=nPairs-1; i>=0; i--)
 	{
 		sorted.push_back(vectPairs[i].first);
 		toSort.push_back(vectPairs[i].second);
 	}
-	// std::sort(sorted.begin(), sorted.end());
-	if (vectInput.size() % 2)
-		toSort.push_back(vectInput.back());
-	for (auto item : sorted)
-		std::cout << item << "  ";
-	std::cout << std::endl;
-	for (auto item : toSort)
-		std::cout << item << "  ";
-	std::cout << std::endl;
 	index = 2;
 	currJacobIndex = PmergeMe::_getJacobIndex(index) - 1;
-	// PmergeMe::_binaryInsert(sorted, toSort[currJacobIndex], sorted.begin(), std::next(sorted.begin(), ));
 	sorted.insert(sorted.begin(), toSort[currJacobIndex]);
-	// std::cout << "added: " << toSort[currJacobIndex] << "\n";
 	do
 	{
 		index++;
@@ -109,9 +103,15 @@ void PmergeMe::sort<std::vector<int> >( std::vector<int> const& vectInput ) cons
 			PmergeMe::_binaryInsert(sorted, toSort[j], sorted.begin(), sorted.begin() + nextJacobIndex + 1);
 		currJacobIndex = nextJacobIndex;
 	} while (currJacobIndex < nPairs - 1);
+	if (vectInput.size() % 2)
+		PmergeMe::_binaryInsert(sorted, vectInput.back(), sorted.begin(), sorted.end());
+	auto end = std::chrono::high_resolution_clock::now();
+	auto deltaTime = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+	std::cout << "sorted: ";
 	for (auto item : sorted)
 		std::cout << item << "  ";
 	std::cout << std::endl;
+	PmergeMe::_printSorted(vectInput.size(), deltaTime, "vector");
 }
 
 template <>
@@ -170,4 +170,9 @@ void	PmergeMe::_binaryInsert(std::vector<int>& vect, int newItem, std::vector<in
 {
 	std::vector<int>::iterator iter = std::upper_bound(start, end, newItem);
 	vect.insert(iter, newItem);
+}
+
+void	PmergeMe::_printSorted(size_t nItems, int time, const char* contName) const noexcept
+{
+	std::cout << "Time to process a range of " << nItems << " elements with std::" << contName << ": " << time << " (microseconds)" << std::endl;
 }

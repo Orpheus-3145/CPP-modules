@@ -6,7 +6,7 @@
 #    By: fra <fra@student.codam.nl>                   +#+                      #
 #                                                    +#+                       #
 #    Created: 2023/10/05 21:08:47 by fra           #+#    #+#                  #
-#    Updated: 2023/10/29 23:20:54 by fra           ########   odam.nl          #
+#    Updated: 2023/10/31 15:58:15 by faru          ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,7 +16,7 @@ SOURCES := $(wildcard *.cpp)
 EXE := PmergeMe
 
 PP := g++
-PP_FLAGS := -Wall -Wextra -Werror -Wshadow -Wpedantic -g3 -fsanitize=address
+PP_FLAGS := -Wall -Wextra -Werror -Wshadow -Wpedantic# -g3 -fsanitize=address
 
 GREEN = \x1b[32;01m
 RED = \x1b[31;01m
@@ -28,12 +28,11 @@ all: $(SOURCES)
 
 run: all
 	@clear
-	@./$(EXE) "123 45 23 +657 327 656 234 4 23 667 45412 23" 
+	@./$(EXE) "123 124 23 327 656 234" 
 
 clean:
 	@rm -f $(EXE)
 	@rm -f *.replace
 	@printf "(C++ 09) $(RED)Removed program $(EXE)$(RESET)\n"
-
 
 re: clean all	

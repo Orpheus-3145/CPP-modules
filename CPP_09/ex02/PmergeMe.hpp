@@ -6,7 +6,7 @@
 /*   By: fra <fra@student.codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/10/27 20:47:53 by fra           #+#    #+#                 */
-/*   Updated: 2023/10/30 14:52:36 by faru          ########   odam.nl         */
+/*   Updated: 2023/10/31 18:51:09 by faru          ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 #include <algorithm>
 #include <iomanip>
 #include <iterator>
+#include <chrono>
 
 class MergeException : std::exception
 {
@@ -50,6 +51,7 @@ class PmergeMe
 		std::list<int>		_toList( void ) const noexcept ;
 		unsigned int		_getJacobIndex( int ) const noexcept ;
 		void				_binaryInsert( std::vector<int>&, int, std::vector<int>::iterator, std::vector<int>::iterator ) const noexcept;
+		void				_printSorted(size_t, int, const char*) const noexcept;
 
 	private:
 		std::string _inputString;
