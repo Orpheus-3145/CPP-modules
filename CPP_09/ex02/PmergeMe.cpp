@@ -6,7 +6,7 @@
 /*   By: fra <fra@student.codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/10/27 21:21:03 by fra           #+#    #+#                 */
-/*   Updated: 2023/10/30 19:33:41 by faru          ########   odam.nl         */
+/*   Updated: 2023/10/30 21:55:21 by fra           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ void PmergeMe::sort<std::vector<int> >( std::vector<int> const& vectInput ) cons
 		else
 			vectPairs.push_back(pair({vectInput[i * 2 + 1], vectInput[i * 2]}));
 	}
-	// std::sort(vectPairs.begin(), vectPairs.end(), [] (pair const& x, pair const& y) -> bool {return(x.first > y.first);} );
+	std::sort(vectPairs.begin(), vectPairs.end(), [] (pair const& x, pair const& y) -> bool {return(x.first > y.first);} );
 	for (unsigned int i=0; i<nPairs; i++)
 	{
 		sorted.push_back(vectPairs[i].first);
