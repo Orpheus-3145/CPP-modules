@@ -6,7 +6,7 @@
 /*   By: fra <fra@student.codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/10/27 21:21:03 by fra           #+#    #+#                 */
-/*   Updated: 2023/10/31 15:20:01 by faru          ########   odam.nl         */
+/*   Updated: 2023/10/31 15:22:09 by faru          ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,7 @@ void		PmergeMe::checkInput( std::string input ) const
 template <>
 void PmergeMe::sort<std::vector<int> >( std::vector<int> const& vectInput ) const noexcept
 {
+	
 	unsigned int		nPairs = vectInput.size() / 2;
 	std::vector<pair>	vectPairs;
 	std::vector<int>	sorted;
