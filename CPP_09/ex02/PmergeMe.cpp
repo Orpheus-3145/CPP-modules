@@ -6,7 +6,7 @@
 /*   By: fra <fra@student.codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/10/27 21:21:03 by fra           #+#    #+#                 */
-/*   Updated: 2023/10/31 18:53:27 by faru          ########   odam.nl         */
+/*   Updated: 2023/11/01 23:53:05 by fra           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,14 +69,20 @@ void PmergeMe::sort<std::vector<int> >( std::vector<int> const& vectInput ) cons
 	std::vector<int>	sorted;
 	std::vector<int>	toSort;
 	unsigned int		index;
+	unsigned int		inserted;
 	unsigned int		currJacobIndex;
 	unsigned int		nextJacobIndex;
 
-	std::cout << "not sorted: ";
-	for (auto item : vectInput)
-		std::cout << item << "  ";
-	std::cout << std::endl;
-	auto start = std::chrono::high_resolution_clock::now();
+	// std::cout << "not sorted: ";
+	// for (auto item : vectInput)
+	// 	std::cout << item << "  ";
+	// std::cout << std::endl;
+	// auto start = std::chrono::high_resolution_clock::now();
+	
+	
+	
+	
+	
 	for (unsigned int i=0; i<nPairs; i++)
 	{
 		if (vectInput[i * 2] > vectInput[i * 2 + 1])
@@ -91,27 +97,81 @@ void PmergeMe::sort<std::vector<int> >( std::vector<int> const& vectInput ) cons
 		toSort.push_back(vectPairs[i].second);
 	}
 	index = 2;
+	// for (auto item : sorted)
+	// 	std::cout << item << "  ";
+	// std::cout << "\n-------------------------------------------" << std::endl;
 	currJacobIndex = PmergeMe::_getJacobIndex(index) - 1;
 	sorted.insert(sorted.begin(), toSort[currJacobIndex]);
+	// for (auto item : sorted)
+	// 	std::cout << item << "  ";
+	// std::cout << "\n-------------------------------------------" << std::endl;
+	// std::cout << "is sorted: " << std::is_sorted(sorted.begin(), sorted.end()) << std::endl;
+	inserted = 0;
 	do
 	{
 		index++;
 		nextJacobIndex = PmergeMe::_getJacobIndex(index) - 1;
 		if (nextJacobIndex < nPairs)
-			PmergeMe::_binaryInsert(sorted, toSort[nextJacobIndex], sorted.begin(), sorted.begin() + nextJacobIndex + 1);
+		{
+			PmergeMe::_binaryInsert(sorted, toSort[nextJacobIndex], sorted.begin(), sorted.begin() + inserted + nextJacobIndex);
+			inserted++;
+			// for (auto item : sorted)
+			// 	std::cout << item << "  ";
+			// std::cout << "\n-------------------------------------------" << std::endl;
+			// if (std::is_sorted(sorted.begin(), sorted.end()) != 1)
+			// 	break ;
+		}
 		for (int j=currJacobIndex + 1; j < std::min<int>(nextJacobIndex, nPairs); j++)
-			PmergeMe::_binaryInsert(sorted, toSort[j], sorted.begin(), sorted.begin() + nextJacobIndex + 1);
+		{
+			// std::cout << "inserting: " << toSort[j] << "\njacob index: " << currJacobIndex << "\nnextjacob index: " << nextJacobIndex<< "\ncurr index: " << j << std::endl;
+			PmergeMe::_binaryInsert(sorted, toSort[j], sorted.begin(), sorted.begin() + inserted + nextJacobIndex);
+			inserted++;
+			// for (auto item : sorted)
+			// 	std::cout << item << "  ";
+			// std::cout << "\n-------------------------------------------" << std::endl;
+			// if (std::is_sorted(sorted.begin(), sorted.end()) != 1)
+			// 	break ;
+		}
+		// if (std::is_sorted(sorted.begin(), sorted.end()) != 1)
+		// 	break ;
 		currJacobIndex = nextJacobIndex;
+		
 	} while (currJacobIndex < nPairs - 1);
 	if (vectInput.size() % 2)
 		PmergeMe::_binaryInsert(sorted, vectInput.back(), sorted.begin(), sorted.end());
-	auto end = std::chrono::high_resolution_clock::now();
-	auto deltaTime = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
-	std::cout << "sorted: ";
-	for (auto item : sorted)
-		std::cout << item << "  ";
-	std::cout << std::endl;
-	PmergeMe::_printSorted(vectInput.size(), deltaTime, "vector");
+	
+	
+	
+	
+	
+	
+	
+	
+	// auto end = std::chrono::high_resolution_clock::now();
+	// auto deltaTime = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+	// std::cout << "sorted: ";
+	// for (auto item : sorted)
+	// 	std::cout << item << "  ";
+	// std::cout << std::endl;
+	std::vector<int>::iterator sortEnd = sorted.begin();
+	int cnt = 0;
+	do
+	{
+		sortEnd = std::is_sorted_until(sortEnd, sorted.end());
+		cnt++;
+		if ((cnt == 1) and (sortEnd == sorted.end()))
+		{
+			std::cout << "is sorted! [" << std::is_sorted(sorted.begin(), sorted.end()) << "]" << std::endl;
+			PmergeMe::_printSorted(vectInput.size(), 123, "vector");
+		}
+		else if (sortEnd != sorted.end())
+		{
+			std::cout << "fucking porcodio" << std::endl;
+			for(auto i = sortEnd; i < sorted.end(); i++)
+				std::cout << *i << "  ";
+			std::cout << std::endl << std::endl << std::endl;
+		}
+	} while (sortEnd != sorted.end());
 }
 
 template <>

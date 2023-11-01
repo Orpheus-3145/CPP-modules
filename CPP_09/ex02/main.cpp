@@ -6,7 +6,7 @@
 /*   By: fra <fra@student.codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/10/27 22:11:43 by fra           #+#    #+#                 */
-/*   Updated: 2023/10/31 18:53:35 by faru          ########   odam.nl         */
+/*   Updated: 2023/11/01 21:30:04 by fra           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,13 @@ int main(int argc, char** argv)
 	std::list<int>		listInput;
 	PmergeMe 			merger;
 
-	for (int i = 1; i < argc; i++)
-		input += std::string(argv[i]).append(" ");
+	if (argc == 2)
+		input = argv[1];
+	else
+	{
+		for (int i = 1; i < argc; i++)
+			input += std::string(argv[i]).append(" ");
+	}
 	try
 	{
 		merger = input;
