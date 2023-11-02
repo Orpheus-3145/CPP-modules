@@ -6,15 +6,15 @@
 /*   By: fra <fra@student.codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/10/27 21:21:03 by fra           #+#    #+#                 */
-/*   Updated: 2023/11/01 23:53:05 by fra           ########   odam.nl         */
+/*   Updated: 2023/11/02 22:19:32 by fra           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "PmergeMe.hpp"
 
-typedef std::pair<int,int> pair;
-
-PmergeMe::PmergeMe( void ) noexcept :_inputString("") {}
+typedef std::pair<int,int>	pair;
+typedef std::vector<int>	intVect;
+typedef std::list<int>		intList;
 
 PmergeMe::PmergeMe( std::string input )
 {
@@ -39,50 +39,78 @@ std::string const&	PmergeMe::getString( void ) const noexcept
 	return (this->_inputString);
 }
 
-void	PmergeMe::setString( std::string const& newString ) noexcept
+void	PmergeMe::setString( std::string const& newString )
 {
+	this->checkInput(newString);
 	this->_inputString = newString;
 }
 
 void		PmergeMe::checkInput( std::string input ) const 
 {
-	std::stringstream errMsg("");
+	std::stringstream	errorStream("");
 	
 	if (input.empty())
 		throw(MergeException("empty string"));
 	for (char digit : input)
 	{
-		if (!std::isdigit(digit) and (std::string("+ ").find(digit) == std::string::npos))
+		if (!std::isdigit(digit) and (std::string("-+ \n\t").find(digit) == std::string::npos))
 		{
-			errMsg << " invalid character: < " << digit << " > in sequence: " << input ;
-			throw(MergeException(errMsg.str()));
+			errorStream << " invalid character: < " << digit << " > in sequence: " << input ;
+			throw(MergeException(errorStream.str()));
 		}
+		else if ( digit == '-')
+			throw(MergeException("numbers most be 0 or positive"));
 	}	
 }
 
 template <>
-void PmergeMe::sort<std::vector<int> >( std::vector<int> const& vectInput ) const noexcept
+void PmergeMe::sort<intVect >( intVect const& vectInput ) const noexcept
 {
-	
+	intVect	sorted;
+	intVect	toSort;
+
+	auto start = std::chrono::high_resolution_clock::now();
+	if (vectInput.size() == 1)
+	{
+		std::cout << "input is a singleton: " << vectInput.front() << std::endl;
+		return ;
+	}
+	this->_splitAndSortVect(vectInput, sorted, toSort);
+	this->_mergeInsertVect(vectInput, sorted, toSort);
+	auto end = std::chrono::high_resolution_clock::now();
+	auto deltaTime = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+	std::cout << "is sorted: " << std::is_sorted(sorted.begin(), sorted.end()) << std::endl;
+	PmergeMe::_printSorted(sorted.size(), deltaTime, "vector");
+}
+
+template <>
+void PmergeMe::sort<intList >( intList const& listInput ) const noexcept
+{
+	intList	sorted;
+	intList	toSort;
+
+	auto start = std::chrono::high_resolution_clock::now();
+	if (listInput.size() == 1)
+	{
+		std::cout << "input is a singleton: " << listInput.front() << std::endl;
+		return ;
+	}
+	this->_splitAndSortList(listInput, sorted, toSort);
+	this->_mergeInsertList(listInput, sorted, toSort);
+	auto end = std::chrono::high_resolution_clock::now();
+	auto deltaTime = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+	std::cout << "is sorted: " << std::is_sorted(sorted.begin(), sorted.end()) << std::endl;
+	// for (auto item : sorted)
+	// 	std::cout << item << std::endl;
+	// std::cout << std::endl;
+	PmergeMe::_printSorted(sorted.size(), deltaTime, "list");
+}
+
+void	PmergeMe::_splitAndSortVect( intVect const& vectInput, intVect& sorted, intVect& toSort ) const noexcept
+{
 	unsigned int		nPairs = vectInput.size() / 2;
 	std::vector<pair>	vectPairs;
-	std::vector<int>	sorted;
-	std::vector<int>	toSort;
-	unsigned int		index;
-	unsigned int		inserted;
-	unsigned int		currJacobIndex;
-	unsigned int		nextJacobIndex;
 
-	// std::cout << "not sorted: ";
-	// for (auto item : vectInput)
-	// 	std::cout << item << "  ";
-	// std::cout << std::endl;
-	// auto start = std::chrono::high_resolution_clock::now();
-	
-	
-	
-	
-	
 	for (unsigned int i=0; i<nPairs; i++)
 	{
 		if (vectInput[i * 2] > vectInput[i * 2 + 1])
@@ -96,143 +124,143 @@ void PmergeMe::sort<std::vector<int> >( std::vector<int> const& vectInput ) cons
 		sorted.push_back(vectPairs[i].first);
 		toSort.push_back(vectPairs[i].second);
 	}
-	index = 2;
-	// for (auto item : sorted)
-	// 	std::cout << item << "  ";
-	// std::cout << "\n-------------------------------------------" << std::endl;
-	currJacobIndex = PmergeMe::_getJacobIndex(index) - 1;
+}
+
+void	PmergeMe::_mergeInsertVect( intVect const& vectInput, intVect& sorted, intVect& toSort ) const noexcept
+{
+	unsigned int	nPairs = vectInput.size() / 2;
+	unsigned int	index = 1;
+	unsigned int	inserted = 0;
+	unsigned int	currJacobIndex = 0;
+	unsigned int	nextJacobIndex = 0;
+
+	if (toSort.empty() == true)
+		return;
 	sorted.insert(sorted.begin(), toSort[currJacobIndex]);
-	// for (auto item : sorted)
-	// 	std::cout << item << "  ";
-	// std::cout << "\n-------------------------------------------" << std::endl;
-	// std::cout << "is sorted: " << std::is_sorted(sorted.begin(), sorted.end()) << std::endl;
-	inserted = 0;
+	inserted++;
 	do
 	{
-		index++;
 		nextJacobIndex = PmergeMe::_getJacobIndex(index) - 1;
 		if (nextJacobIndex < nPairs)
-		{
-			PmergeMe::_binaryInsert(sorted, toSort[nextJacobIndex], sorted.begin(), sorted.begin() + inserted + nextJacobIndex);
-			inserted++;
-			// for (auto item : sorted)
-			// 	std::cout << item << "  ";
-			// std::cout << "\n-------------------------------------------" << std::endl;
-			// if (std::is_sorted(sorted.begin(), sorted.end()) != 1)
-			// 	break ;
-		}
+			PmergeMe::_binaryInsertVect(sorted, toSort[nextJacobIndex], inserted++ + nextJacobIndex);
 		for (int j=currJacobIndex + 1; j < std::min<int>(nextJacobIndex, nPairs); j++)
-		{
-			// std::cout << "inserting: " << toSort[j] << "\njacob index: " << currJacobIndex << "\nnextjacob index: " << nextJacobIndex<< "\ncurr index: " << j << std::endl;
-			PmergeMe::_binaryInsert(sorted, toSort[j], sorted.begin(), sorted.begin() + inserted + nextJacobIndex);
-			inserted++;
-			// for (auto item : sorted)
-			// 	std::cout << item << "  ";
-			// std::cout << "\n-------------------------------------------" << std::endl;
-			// if (std::is_sorted(sorted.begin(), sorted.end()) != 1)
-			// 	break ;
-		}
-		// if (std::is_sorted(sorted.begin(), sorted.end()) != 1)
-		// 	break ;
+			PmergeMe::_binaryInsertVect(sorted, toSort[j], inserted++ + j);
 		currJacobIndex = nextJacobIndex;
+		index++;
 		
-	} while (currJacobIndex < nPairs - 1);
+	} while (currJacobIndex < nPairs);
 	if (vectInput.size() % 2)
-		PmergeMe::_binaryInsert(sorted, vectInput.back(), sorted.begin(), sorted.end());
+		PmergeMe::_binaryInsertVect(sorted, vectInput.back(), vectInput.size() - 1);
+}
 	
-	
-	
-	
-	
-	
-	
-	
-	// auto end = std::chrono::high_resolution_clock::now();
-	// auto deltaTime = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
-	// std::cout << "sorted: ";
-	// for (auto item : sorted)
-	// 	std::cout << item << "  ";
-	// std::cout << std::endl;
-	std::vector<int>::iterator sortEnd = sorted.begin();
-	int cnt = 0;
+void	PmergeMe::_splitAndSortList( intList const& listInput, intList& sorted, intList& toSort ) const noexcept
+{
+	std::list<pair>				listPairs;
+	intList::const_iterator 	curr = listInput.begin();
+	intList::const_iterator 	next = curr;
+
+	next = std::next(curr);
+	while (curr != listInput.end())
+	{
+		if (*curr > *next)
+			listPairs.push_back(pair({*curr, *next}));
+		else
+			listPairs.push_back(pair({*next, *curr}));
+		curr = std::next(next);
+		next = std::next(curr);
+	}
+	listPairs.sort([] (pair const& x, pair const& y) -> bool {return(x.first > y.first);} );
+	for (auto it=listPairs.rbegin(); it != listPairs.rend(); it++)
+	{
+		sorted.push_back((*it).first);
+		toSort.push_back((*it).second);
+	}
+}
+
+void	PmergeMe::_mergeInsertList( intList const& listInput, intList& sorted, intList& toSort ) const noexcept
+{
+	unsigned int		index = 1;
+	intList::iterator	currJacobIter = toSort.begin();
+	intList::iterator	nextJacobIter = toSort.begin();
+	intList::iterator	sortedJacobIter = sorted.begin();
+
+	if (toSort.empty() == true)
+		return;
+	sorted.insert(sorted.begin(), *currJacobIter);
 	do
 	{
-		sortEnd = std::is_sorted_until(sortEnd, sorted.end());
-		cnt++;
-		if ((cnt == 1) and (sortEnd == sorted.end()))
+		PmergeMe::_advanceIter(nextJacobIter, toSort.end(), PmergeMe::_getJacobIndex(index) - 1);
+		PmergeMe::_advanceIter(sortedJacobIter, sorted.end(), PmergeMe::_getJacobIndex(index) - 1);
+		if (nextJacobIter != toSort.end())
+			PmergeMe::_binaryInsertList(sorted, *nextJacobIter, sorted.begin(), sortedJacobIter);
+		std::advance(currJacobIter, 1);
+		while (currJacobIter != nextJacobIter)
 		{
-			std::cout << "is sorted! [" << std::is_sorted(sorted.begin(), sorted.end()) << "]" << std::endl;
-			PmergeMe::_printSorted(vectInput.size(), 123, "vector");
+			PmergeMe::_binaryInsertList(sorted, *currJacobIter, sorted.begin(), sortedJacobIter);
+			std::advance(currJacobIter, 1);
 		}
-		else if (sortEnd != sorted.end())
-		{
-			std::cout << "fucking porcodio" << std::endl;
-			for(auto i = sortEnd; i < sorted.end(); i++)
-				std::cout << *i << "  ";
-			std::cout << std::endl << std::endl << std::endl;
-		}
-	} while (sortEnd != sorted.end());
+		index++;
+		// std::cout << index << std::endl;
+	}	while (nextJacobIter != toSort.end());
+	if (listInput.size() % 2)
+		PmergeMe::_binaryInsertList(sorted, listInput.back(), sorted.begin(), sorted.end());
 }
 
-template <>
-void PmergeMe::sort<std::list<int> >( std::list<int> const& listInput ) const noexcept
+intVect	PmergeMe::toVector( void ) const noexcept 
 {
-	(void)listInput;
-}
+	intVect	vect;
+    int					number;
+    std::stringstream	ss(this->_inputString);
 
-std::vector<int>	PmergeMe::_toVector( void ) const noexcept 
-{
-	std::vector<int>	vect;
-	std::string			currNumber = "";
-
-	for (char digit : this->_inputString)
-	{
-		if (digit != ' ')
-			currNumber += digit;
-		else if (currNumber.empty() == false)
-		{
-			vect.push_back(std::stoi(currNumber));
-			currNumber.clear();
-		}
-	}
+    while (ss >> number)
+		vect.push_back(number);
 	return (vect);
 }
 
-std::list<int>		PmergeMe::_toList( void ) const noexcept 
+intList	PmergeMe::toList( void ) const noexcept 
 {
-	std::list<int>	list;
-	std::string		currNumber = "";
+	intList				list;
+    int					number;
+    std::stringstream	ss(this->_inputString);
 
-	for (char digit : this->_inputString)
-	{
-		if (digit != ' ')
-			currNumber += digit;
-		else if (currNumber.empty() == false)
-		{
-			list.push_back(std::stoi(currNumber));
-			currNumber.clear();
-		}
-	}
+    while (ss >> number)
+		list.push_back(number);
 	return (list);
 }
 
-unsigned int		PmergeMe::_getJacobIndex( int index ) const noexcept
+unsigned int	PmergeMe::_getJacobIndex( int index ) const noexcept
 {
 	if (index == 0)
-		return (0);
-	else if (index == 1)
 		return (1);
+	else if (index == 1)
+		return (3);
 	else
 		return ( _getJacobIndex(index - 1) + _getJacobIndex(index - 2) * 2);
 }
 
-void	PmergeMe::_binaryInsert(std::vector<int>& vect, int newItem, std::vector<int>::iterator start, std::vector<int>::iterator end) const noexcept
+void	PmergeMe::_binaryInsertVect(intVect& vect, int newItem, unsigned int max_range ) const noexcept
 {
-	std::vector<int>::iterator iter = std::upper_bound(start, end, newItem);
+	intVect::iterator iter = std::upper_bound(vect.begin(), vect.begin() + max_range, newItem);
 	vect.insert(iter, newItem);
+}
+
+void	PmergeMe::_binaryInsertList(intList& list, int newItem, intList::iterator start, intList::iterator end ) const noexcept
+{
+	intList::iterator iter = std::upper_bound(start, end, newItem);
+	list.insert(iter, newItem);
 }
 
 void	PmergeMe::_printSorted(size_t nItems, int time, const char* contName) const noexcept
 {
 	std::cout << "Time to process a range of " << nItems << " elements with std::" << contName << ": " << time << " (microseconds)" << std::endl;
+}
+template <typename Iterator>
+void	PmergeMe::_advanceIter(Iterator& iter, Iterator iterMax, unsigned int amount ) const noexcept
+{
+	while (amount--)
+	{
+		std::advance(iter, 1);
+		if (iter == iterMax)
+			break ;
+	}
 }

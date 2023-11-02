@@ -6,7 +6,7 @@
 /*   By: fra <fra@student.codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/10/27 22:11:43 by fra           #+#    #+#                 */
-/*   Updated: 2023/11/01 21:30:04 by fra           ########   odam.nl         */
+/*   Updated: 2023/11/02 20:48:30 by fra           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,12 +15,17 @@
 
 int main(int argc, char** argv)
 {
-	std::string			input = "";
+	std::string			input;
+	PmergeMe 			merger;
 	std::vector<int>	vectInput;
 	std::list<int>		listInput;
-	PmergeMe 			merger;
 
-	if (argc == 2)
+	if (argc < 2)
+	{
+		std::cerr <<"No input provided" << std::endl;
+		return (1);
+	}
+	else if (argc == 2)
 		input = argv[1];
 	else
 	{
@@ -29,19 +34,16 @@ int main(int argc, char** argv)
 	}
 	try
 	{
-		merger = input;
-		vectInput = merger._toVector();
-		listInput = merger._toList();
+		merger.setString(input);
+		vectInput = merger.toVector();
+		listInput = merger.toList();
 	}
 	catch(MergeException const& e)
 	{
 		std::cerr <<"Error: " << e.what() << std::endl;
 		return (1);
 	}
-	// for (auto item : vectInput)
-	// 	std::cout << item << "  ";
-	// std::cout << std::endl;
-	merger.sort<std::vector<int> >(vectInput);
-	// merger.sort<std::list<int> >(listInput);
+	// merger.sort<std::vector<int> >(vectInput);
+	merger.sort<std::list<int> >(listInput);
 	return(0);
 }
