@@ -1,0 +1,41 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         ::::::::             #
+#    Makefile                                           :+:    :+:             #
+#                                                      +:+                     #
+#    By: fra <fra@student.codam.nl>                   +#+                      #
+#                                                    +#+                       #
+#    Created: 2023/09/28 23:40:48 by fra           #+#    #+#                  #
+#    Updated: 2023/10/17 18:31:23 by faru          ########   odam.nl          #
+#                                                                              #
+# **************************************************************************** #
+
+SHELL := /bin/bash
+
+SOURCES := $(wildcard *.cpp)
+EXE := main
+
+PP := g++
+PP_FLAGS := -std=c++98 -Wall -Wextra -Werror -g3 -fsanitize=address
+
+GREEN = \x1b[32;01m
+RED = \x1b[31;01m
+RESET = \x1b[0m
+
+all: $(SOURCES)
+	@$(PP) $(PP_FLAGS) $(DEBUG_FLAGS) $(SOURCES) -o $(EXE)
+	@printf "(C++ 01) $(GREEN)Created program $(EXE)$(RESET)\n"
+
+run: all
+	@clear
+	@./$(EXE) to_replace Pascal HHHH
+
+clean:
+	@rm -f $(EXE)
+	@rm -f *.replace
+	@printf "(C++ 01) $(RED)Removed program $(EXE)$(RESET)\n"
+
+
+re: clean all
+
+.PHONY: all, run, clean, re
