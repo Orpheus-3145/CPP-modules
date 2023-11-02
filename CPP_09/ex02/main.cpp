@@ -6,12 +6,50 @@
 /*   By: fra <fra@student.codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/10/27 22:11:43 by fra           #+#    #+#                 */
-/*   Updated: 2023/11/02 20:48:30 by fra           ########   odam.nl         */
+/*   Updated: 2023/11/02 23:17:18 by fra           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "PmergeMe.hpp"
 #include <iostream>
+
+std::string	readFile(std::string fileName)
+{
+	std::ifstream readFile(fileName);
+	std::string line;
+	std::string number;
+	std::string input;
+
+	if (readFile.is_open() == false)
+		return (input);
+	while (std::getline(readFile, line))
+	{
+    	std::stringstream	ss(line);
+		while (ss >> number)
+			input.append(number + std::string(" "));
+	}
+	readFile.close();
+	return (input);
+}
+
+std::string	storeInput(int argc, char** argv)
+{
+	std::string	input;
+
+	if (argc == 2)
+	{
+		if (std::string(argv[1]).find(".input") != std::string::npos)
+			input = readFile(argv[1]);
+		else
+			input = argv[1];
+	}
+	else if (argc > 2)
+	{
+		for (int i = 1; i < argc; i++)
+			input += std::string(argv[i]).append(" ");
+	}
+	return (input);
+}
 
 int main(int argc, char** argv)
 {
@@ -20,30 +58,19 @@ int main(int argc, char** argv)
 	std::vector<int>	vectInput;
 	std::list<int>		listInput;
 
-	if (argc < 2)
-	{
-		std::cerr <<"No input provided" << std::endl;
-		return (1);
-	}
-	else if (argc == 2)
-		input = argv[1];
-	else
-	{
-		for (int i = 1; i < argc; i++)
-			input += std::string(argv[i]).append(" ");
-	}
+	input = storeInput(argc, argv);
 	try
 	{
 		merger.setString(input);
-		vectInput = merger.toVector();
-		listInput = merger.toList();
 	}
 	catch(MergeException const& e)
 	{
 		std::cerr <<"Error: " << e.what() << std::endl;
 		return (1);
 	}
-	// merger.sort<std::vector<int> >(vectInput);
+	vectInput = merger.toVector();
+	merger.sort<std::vector<int> >(vectInput);
+	listInput = merger.toList();
 	merger.sort<std::list<int> >(listInput);
 	return(0);
 }

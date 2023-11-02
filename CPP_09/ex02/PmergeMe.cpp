@@ -6,7 +6,7 @@
 /*   By: fra <fra@student.codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/10/27 21:21:03 by fra           #+#    #+#                 */
-/*   Updated: 2023/11/02 22:19:32 by fra           ########   odam.nl         */
+/*   Updated: 2023/11/02 22:49:49 by fra           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,7 @@ void PmergeMe::sort<intList >( intList const& listInput ) const noexcept
 		return ;
 	}
 	this->_splitAndSortList(listInput, sorted, toSort);
-	this->_mergeInsertList(listInput, sorted, toSort);
+	this->_mergeInsertList(sorted, toSort);
 	auto end = std::chrono::high_resolution_clock::now();
 	auto deltaTime = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
 	std::cout << "is sorted: " << std::is_sorted(sorted.begin(), sorted.end()) << std::endl;
@@ -157,10 +157,12 @@ void	PmergeMe::_splitAndSortList( intList const& listInput, intList& sorted, int
 {
 	std::list<pair>				listPairs;
 	intList::const_iterator 	curr = listInput.begin();
-	intList::const_iterator 	next = curr;
+	intList::const_iterator 	next = std::next(curr);
+	intList::const_iterator		lastItem = listInput.end();
 
-	next = std::next(curr);
-	while (curr != listInput.end())
+	if ((listInput.size() % 2) != 0)
+		lastItem--;
+	while (curr != lastItem)
 	{
 		if (*curr > *next)
 			listPairs.push_back(pair({*curr, *next}));
@@ -175,9 +177,11 @@ void	PmergeMe::_splitAndSortList( intList const& listInput, intList& sorted, int
 		sorted.push_back((*it).first);
 		toSort.push_back((*it).second);
 	}
+	if (lastItem != listInput.end())
+		toSort.push_back(*lastItem);
 }
 
-void	PmergeMe::_mergeInsertList( intList const& listInput, intList& sorted, intList& toSort ) const noexcept
+void	PmergeMe::_mergeInsertList( intList& sorted, intList& toSort ) const noexcept
 {
 	unsigned int		index = 1;
 	intList::iterator	currJacobIter = toSort.begin();
@@ -200,10 +204,7 @@ void	PmergeMe::_mergeInsertList( intList const& listInput, intList& sorted, intL
 			std::advance(currJacobIter, 1);
 		}
 		index++;
-		// std::cout << index << std::endl;
 	}	while (nextJacobIter != toSort.end());
-	if (listInput.size() % 2)
-		PmergeMe::_binaryInsertList(sorted, listInput.back(), sorted.begin(), sorted.end());
 }
 
 intVect	PmergeMe::toVector( void ) const noexcept 
@@ -252,8 +253,10 @@ void	PmergeMe::_binaryInsertList(intList& list, int newItem, intList::iterator s
 
 void	PmergeMe::_printSorted(size_t nItems, int time, const char* contName) const noexcept
 {
-	std::cout << "Time to process a range of " << nItems << " elements with std::" << contName << ": " << time << " (microseconds)" << std::endl;
+	float	milliSecs = float(time) / 1000.f;
+	std::cout << "Time to process a range of " << nItems << " elements with std::" << contName << ": " << milliSecs << " (milliseconds)" << std::endl;
 }
+
 template <typename Iterator>
 void	PmergeMe::_advanceIter(Iterator& iter, Iterator iterMax, unsigned int amount ) const noexcept
 {

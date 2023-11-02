@@ -6,13 +6,14 @@
 /*   By: fra <fra@student.codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/10/27 20:47:53 by fra           #+#    #+#                 */
-/*   Updated: 2023/11/02 22:10:22 by fra           ########   odam.nl         */
+/*   Updated: 2023/11/02 22:53:59 by fra           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 #include <iostream>
 #include <sstream>
+#include <fstream>
 #include <string>
 #include <vector>
 #include <array>
@@ -58,7 +59,7 @@ class PmergeMe
 		void				_binaryInsertVect( intVect&, int, unsigned int ) const noexcept;
 		void				_binaryInsertList( intList&, int, intList::iterator, intList::iterator ) const noexcept;
 		void				_splitAndSortList( intList const&, intList&, intList& ) const noexcept;
-		void				_mergeInsertList( intList const&, intList&, intList& ) const noexcept ;
+		void				_mergeInsertList( intList&, intList& ) const noexcept ;
 		unsigned int		_getJacobIndex( int ) const noexcept ;
 		void				_printSorted(size_t, int, const char*) const noexcept;
 		template <typename Iterator>

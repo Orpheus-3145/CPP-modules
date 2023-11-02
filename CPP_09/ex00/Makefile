@@ -6,7 +6,7 @@
 #    By: fra <fra@student.codam.nl>                   +#+                      #
 #                                                    +#+                       #
 #    Created: 2023/10/05 21:08:47 by fra           #+#    #+#                  #
-#    Updated: 2023/10/24 23:44:22 by fra           ########   odam.nl          #
+#    Updated: 2023/11/02 23:14:53 by fra           ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,7 +15,7 @@ SHELL := /bin/bash
 SOURCES := $(wildcard *.cpp)
 EXE := btc
 
-PP := g++
+PP := c++
 PP_FLAGS := -Wall -Wextra -Werror -Wshadow -Wpedantic -g3 -fsanitize=address
 
 GREEN = \x1b[32;01m
