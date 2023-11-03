@@ -6,7 +6,7 @@
 /*   By: fra <fra@student.codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/10/27 21:21:03 by fra           #+#    #+#                 */
-/*   Updated: 2023/11/02 22:49:49 by fra           ########   odam.nl         */
+/*   Updated: 2023/11/04 00:02:07 by fra           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,19 +48,41 @@ void	PmergeMe::setString( std::string const& newString )
 void		PmergeMe::checkInput( std::string input ) const 
 {
 	std::stringstream	errorStream("");
+	std::string			currNumber;
+	long				number;
 	
 	if (input.empty())
 		throw(MergeException("empty string"));
 	for (char digit : input)
 	{
-		if (!std::isdigit(digit) and (std::string("-+ \n\t").find(digit) == std::string::npos))
+		if ((digit == ' ') or 
+			(digit == '\n') or
+			(digit == '\t'))
 		{
-			errorStream << " invalid character: < " << digit << " > in sequence";
+			if (currNumber.empty() == false)
+			{
+				number = std::stol(currNumber);
+				if ((number < INT32_MIN) or (number > INT32_MAX))
+					throw(MergeException(std::string("overflow or underflow: ").append(currNumber)));
+				currNumber.clear();
+			}
+		}	
+		else if ((std::isdigit(digit) == true) or (digit == '+'))
+			currNumber += digit;
+		else if (digit == '-')
+			throw(MergeException("numbers most be 0 or positive"));
+		else
+		{
+			errorStream << " invalid character: <" << digit << "> in sequence";
 			throw(MergeException(errorStream.str()));
 		}
-		else if ( digit == '-')
-			throw(MergeException("numbers most be 0 or positive"));
-	}	
+	}
+	if (currNumber.empty() == false)
+	{
+		number = std::stol(currNumber);
+		if ((number < INT32_MIN) or (number > INT32_MAX))
+			throw(MergeException(std::string("overflow or underflow: ").append(currNumber)));
+	}
 }
 
 template <>
@@ -69,9 +91,9 @@ void PmergeMe::sort<intVect >( intVect const& vectInput ) const noexcept
 	intVect	sorted;
 	intVect	toSort;
 
-	if (vectInput.size() == 1)
+	if (vectInput.size() <= 1)
 	{
-		std::cout << "input is a singleton: " << vectInput.front() << std::endl;
+		std::cout << "input is a singleton or empty" << std::endl;
 		return ;
 	}
 	auto start = std::chrono::high_resolution_clock::now();
@@ -89,9 +111,9 @@ void PmergeMe::sort<intList >( intList const& listInput ) const noexcept
 	intList	sorted;
 	intList	toSort;
 
-	if (listInput.size() == 1)
+	if (listInput.size() <= 1)
 	{
-		std::cout << "input is a singleton: " << listInput.front() << std::endl;
+		std::cout << "input is a singleton or empty" << std::endl;
 		return ;
 	}
 	auto start = std::chrono::high_resolution_clock::now();
@@ -206,7 +228,7 @@ void	PmergeMe::_mergeInsertList( intList& sorted, intList& toSort ) const noexce
 
 intVect	PmergeMe::toVector( void ) const noexcept 
 {
-	intVect	vect;
+	intVect				vect;
     int					number;
     std::stringstream	ss(this->_inputString);
 
@@ -251,7 +273,7 @@ void	PmergeMe::_binaryInsertList(intList& list, int newItem, intList::iterator s
 void	PmergeMe::_printSorted(size_t nItems, int time, const char* contName) const noexcept
 {
 	float	milliSecs = float(time) / 1000.f;
-	std::court << " - time to process a range of " << nItems << " elements with std::" << contName << ": " << milliSecs << " (milliseconds)" << std::endl;
+	std::cout << " - time to process a range of " << nItems << " elements with std::" << contName << ": " << milliSecs << " (milliseconds)" << std::endl;
 }
 
 template <typename Iterator>
