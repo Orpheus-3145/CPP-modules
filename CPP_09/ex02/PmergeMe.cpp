@@ -55,7 +55,7 @@ void		PmergeMe::checkInput( std::string input ) const
 	{
 		if (!std::isdigit(digit) and (std::string("-+ \n\t").find(digit) == std::string::npos))
 		{
-			errorStream << " invalid character: < " << digit << " > in sequence: " << input ;
+			errorStream << " invalid character: < " << digit << " > in sequence";
 			throw(MergeException(errorStream.str()));
 		}
 		else if ( digit == '-')
