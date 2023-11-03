@@ -69,17 +69,17 @@ void PmergeMe::sort<intVect >( intVect const& vectInput ) const noexcept
 	intVect	sorted;
 	intVect	toSort;
 
-	auto start = std::chrono::high_resolution_clock::now();
 	if (vectInput.size() == 1)
 	{
 		std::cout << "input is a singleton: " << vectInput.front() << std::endl;
 		return ;
 	}
+	auto start = std::chrono::high_resolution_clock::now();
 	this->_splitAndSortVect(vectInput, sorted, toSort);
 	this->_mergeInsertVect(vectInput, sorted, toSort);
 	auto end = std::chrono::high_resolution_clock::now();
 	auto deltaTime = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
-	std::cout << "is sorted: " << std::is_sorted(sorted.begin(), sorted.end()) << std::endl;
+	std::cout << "is sorted: " << std::is_sorted(sorted.begin(), sorted.end());
 	PmergeMe::_printSorted(sorted.size(), deltaTime, "vector");
 }
 
@@ -89,20 +89,17 @@ void PmergeMe::sort<intList >( intList const& listInput ) const noexcept
 	intList	sorted;
 	intList	toSort;
 
-	auto start = std::chrono::high_resolution_clock::now();
 	if (listInput.size() == 1)
 	{
 		std::cout << "input is a singleton: " << listInput.front() << std::endl;
 		return ;
 	}
+	auto start = std::chrono::high_resolution_clock::now();
 	this->_splitAndSortList(listInput, sorted, toSort);
 	this->_mergeInsertList(sorted, toSort);
 	auto end = std::chrono::high_resolution_clock::now();
 	auto deltaTime = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
-	std::cout << "is sorted: " << std::is_sorted(sorted.begin(), sorted.end()) << std::endl;
-	// for (auto item : sorted)
-	// 	std::cout << item << std::endl;
-	// std::cout << std::endl;
+	std::cout << "is sorted: " << std::is_sorted(sorted.begin(), sorted.end());
 	PmergeMe::_printSorted(sorted.size(), deltaTime, "list");
 }
 
@@ -254,7 +251,7 @@ void	PmergeMe::_binaryInsertList(intList& list, int newItem, intList::iterator s
 void	PmergeMe::_printSorted(size_t nItems, int time, const char* contName) const noexcept
 {
 	float	milliSecs = float(time) / 1000.f;
-	std::cout << "Time to process a range of " << nItems << " elements with std::" << contName << ": " << milliSecs << " (milliseconds)" << std::endl;
+	std::court << " - time to process a range of " << nItems << " elements with std::" << contName << ": " << milliSecs << " (milliseconds)" << std::endl;
 }
 
 template <typename Iterator>
@@ -264,6 +261,6 @@ void	PmergeMe::_advanceIter(Iterator& iter, Iterator iterMax, unsigned int amoun
 	{
 		std::advance(iter, 1);
 		if (iter == iterMax)
-			break ;
+			return ;
 	}
 }
