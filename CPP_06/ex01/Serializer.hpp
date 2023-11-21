@@ -25,13 +25,14 @@ typedef struct Data_s
 class Serializer
 {
 	public:
-		Serializer( void ) {}
-		Serializer( Serializer const& ) {}
 		virtual ~Serializer( void ) {}
-		Serializer& operator=( Serializer const& ) {return (*this);}
-
 		static uintptr_t	serialize( Data* ptr ) {return(reinterpret_cast<uintptr_t>(ptr));}
 		static Data*		deserialize (uintptr_t raw ) {return(reinterpret_cast<Data*>(raw));}
+
+	private:
+		Serializer( void ) {}
+		Serializer( Serializer const& ) {}
+		Serializer& operator=( Serializer const& ) {return (*this);}
 };
 
 #endif
