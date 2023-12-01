@@ -6,12 +6,13 @@
 /*   By: fra <fra@student.codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/10/23 17:15:08 by fra           #+#    #+#                 */
-/*   Updated: 2023/10/23 21:57:01 by fra           ########   odam.nl         */
+/*   Updated: 2023/12/01 13:59:26 by faru          ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 #include <iostream>
+#include <iterator>
 #include <set>
 
 class SpanException : public std::exception
@@ -28,27 +29,32 @@ class SpanException : public std::exception
 class Span
 {
 	public:
-		Span( void ) noexcept;
-		Span( std::set<int>::size_type maxItems ) noexcept;
+		Span( void ) noexcept {};
+		Span( unsigned int maxItems ) noexcept;
 		Span( Span const& ) noexcept;
 		~Span( void ) noexcept;
 		Span& operator=( Span const& ) noexcept;
 
-		void	addNumber( int ) ;
-		template <class ClassIterator>
-		void	addMultipleNumbers( ClassIterator start, ClassIterator end ) {
+		template <typename InputIterator>
+		void			addMultipleNumbers( InputIterator start, InputIterator end )
+		{
+			if ((std::distance(start, end) + this->_items.size()) > this->_maxItems)	
+				throw(SpanException("Too many elements to add"));
 			this->_items.insert(start, end);
-		}
-		long	shortestSpan( void ) const ;
-		long	longestSpan( void ) const ;
-		void	printSpan( void ) const noexcept;
+		};
+		void				addSingleNumber( int ) ;
+		size_t				shortestSpan( void ) const ;
+		size_t				longestSpan( void ) const ;
+		void				printSpan( void ) const noexcept;
 
-		std::set<int>::size_type	getMaxItems( void ) const noexcept;
-		void						setMaxItems( std::set<int>::size_type ) noexcept;
-		std::set<int>				getItems( void ) const noexcept;
-		void						setItems( std::set<int> const& ) noexcept;
+		void				setMaxItems( unsigned int );
+		void				setItems( std::multiset<int> const& );
+		unsigned int		getMaxItems( void ) const noexcept;
+		std::multiset<int>	getItems( void ) const noexcept;
 
 	private:
-		std::set<int>				_items;
-		std::set<int>::size_type	_maxItems;
+		std::multiset<int>	_items;
+		unsigned int		_maxItems = 0;
+
+		size_t		_norm( long, long ) const noexcept;
 };

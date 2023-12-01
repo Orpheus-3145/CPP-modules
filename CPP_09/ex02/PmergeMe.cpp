@@ -6,7 +6,7 @@
 /*   By: fra <fra@student.codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/10/27 21:21:03 by fra           #+#    #+#                 */
-/*   Updated: 2023/11/04 00:02:07 by fra           ########   odam.nl         */
+/*   Updated: 2023/11/24 17:32:14 by faru          ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,8 +66,8 @@ void		PmergeMe::checkInput( std::string input ) const
 					throw(MergeException(std::string("overflow or underflow: ").append(currNumber)));
 				currNumber.clear();
 			}
-		}	
-		else if ((std::isdigit(digit) == true) or (digit == '+'))
+		}
+		else if ((std::isdigit(digit) == true) || (digit == '+'))
 			currNumber += digit;
 		else if (digit == '-')
 			throw(MergeException("numbers most be 0 or positive"));

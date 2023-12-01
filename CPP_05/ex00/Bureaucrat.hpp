@@ -6,7 +6,7 @@
 /*   By: fra <fra@student.codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/10/11 21:35:19 by fra           #+#    #+#                 */
-/*   Updated: 2023/10/12 22:05:29 by fra           ########   odam.nl         */
+/*   Updated: 2023/11/23 16:02:49 by faru          ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ class GradeTooLowException : public std::exception
 		GradeTooLowException(std::string const msg) : 
 			std::exception() , _msg(msg) {}
 		virtual const char* what() const throw();
-		virtual ~GradeTooLowException() throw() { }
+		virtual ~GradeTooLowException() throw() {}
 	
 	protected:
 		const std::string _msg;

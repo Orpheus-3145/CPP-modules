@@ -1,19 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   easyfind.hpp                                       :+:    :+:            */
+/*   easyFind.hpp                                       :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: fra <fra@student.codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/10/21 03:00:33 by fra           #+#    #+#                 */
-/*   Updated: 2023/10/22 17:21:54 by fra           ########   odam.nl         */
+/*   Updated: 2023/12/01 12:16:19 by faru          ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
-#include <iostream>
 #include <vector>
+#include <array>
 #include <list>
+#include <forward_list>
 #include <deque>
 
 class FindException : public std::exception
@@ -27,15 +28,26 @@ class FindException : public std::exception
 		std::string _msg;
 };
 
-template <typename T> int easyfind(T const&, int)
+template <typename T> int easyFind(T const&, int)
 {
-    throw(FindException("impossibile to run the generic function"));
+    throw(FindException("input not a sequence container of integers"));
 }
 
 template <>
-int easyfind(std::vector<int> const& vect, int toFind)
+int easyFind(std::vector<int> const& vect, int toFind)
 {
-    for(std::vector<int>::const_iterator st = vect.begin(); st != vect.end(); st++)
+    for(auto st = vect.begin(); st != vect.end(); st++)
+    {
+        if (*st == toFind)
+            return (*st);
+    }
+    throw(FindException("element not found"));
+}
+
+template<size_t N>
+int easyFind(std::array<int, N> arr, int toFind)
+{
+    for(auto st = arr.begin(); st != arr.end(); st++)
     {
         if (*st == toFind)
             return (*st);
@@ -44,9 +56,9 @@ int easyfind(std::vector<int> const& vect, int toFind)
 }
 
 template <>
-int easyfind(std::list<int> const& list, int toFind)
+int easyFind(std::list<int> const& list, int toFind)
 {
-    for(std::list<int>::const_iterator st = list.begin(); st != list.end(); st++)
+    for(auto st = list.begin(); st != list.end(); st++)
     {
         if (*st == toFind)
             return (*st);
@@ -55,9 +67,20 @@ int easyfind(std::list<int> const& list, int toFind)
 }
 
 template <>
-int easyfind(std::deque<int> const& deq, int toFind)
+int easyFind(std::forward_list<int> const& f_list, int toFind)
 {
-    for(std::deque<int>::const_iterator st = deq.begin(); st != deq.end(); st++)
+    for(auto st = f_list.begin(); st != f_list.end(); st++)
+    {
+        if (*st == toFind)
+            return (*st);
+    }
+    throw(FindException("element not found"));
+}
+
+template <>
+int easyFind(std::deque<int> const& deq, int toFind)
+{
+    for(auto st = deq.begin(); st != deq.end(); st++)
     {
         if (*st == toFind)
             return (*st);

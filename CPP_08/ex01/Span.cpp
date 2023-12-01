@@ -6,18 +6,13 @@
 /*   By: fra <fra@student.codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/10/23 17:19:48 by fra           #+#    #+#                 */
-/*   Updated: 2023/10/23 19:49:20 by fra           ########   odam.nl         */
+/*   Updated: 2023/12/01 13:54:29 by faru          ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Span.hpp"
 
-Span::Span( void ) noexcept
-{
-	this->_maxItems = 0;
-}
-
-Span::Span( std::set<int>::size_type maxItems ) noexcept
+Span::Span( unsigned int maxItems ) noexcept
 {
 	this->_maxItems = maxItems;
 }
@@ -42,45 +37,43 @@ Span& Span::operator=(Span const& other ) noexcept
 	return (*this);
 }
 
-
-void	Span::addNumber( int newNumber )
+void	Span::addSingleNumber( int newNumber )
 {
-	if (this->_items.size() > this->_maxItems)
+	if ((1 + this->_items.size()) > this->_maxItems)
 		throw(SpanException("Span is full already"));
 	this->_items.insert(newNumber);
 }
 
-long		Span::shortestSpan( void ) const
+size_t	Span::shortestSpan( void ) const
 {
-	long	delta = *this->_items.rbegin();
-	auto	currItem = (this->_items.begin());
-	auto	prevItem = currItem++;
+	size_t	delta;
+	size_t 	minDelta = this->longestSpan();
+	auto			currItem = (this->_items.begin());
+	auto			prevItem = currItem++;
 
 	if (this->_items.size() == 1)
 		throw(SpanException("Span has only one element"));
+	else if (this->_items.size() == 2)
+		return (minDelta);
 	while (currItem != this->_items.end())
 	{
-		if ((*currItem - *prevItem) == 1)
-			return (1);
-		else if (delta > (*currItem - *prevItem))
-			delta = *currItem - *prevItem;
+		delta = this->_norm(*currItem, *prevItem);
+		if (delta == 0)
+			break ;
+		else if (minDelta > delta)
+			minDelta = delta;
 		currItem++;
 		prevItem++;
 	}
 	return (delta);
 }
 
-long		Span::longestSpan( void ) const
+size_t	Span::longestSpan( void ) const
 {
 	if (this->_items.size() == 1)
 		throw(SpanException("Span has only one element"));
 
-	long minItem = *this->_items.begin();
-	long maxItem = *this->_items.rbegin();
-	if ((minItem * maxItem) > 0)
-		return (std::abs(maxItem - minItem));
-	else
-		return (std::abs(maxItem) + std::abs(minItem));
+	return (this->_norm(*this->_items.begin(), *this->_items.rbegin()));
 }
 
 void	Span::printSpan( void ) const noexcept
@@ -89,22 +82,34 @@ void	Span::printSpan( void ) const noexcept
 		std::cout << item << std::endl;
 }
 
-std::set<int>::size_type		Span::getMaxItems( void ) const noexcept
+void	Span::setMaxItems( unsigned int newMax )
 {
-	return (this->_maxItems);
-}
-
-void	Span::setMaxItems( std::set<int>::size_type newMax ) noexcept
-{
+	if (newMax < this->_items.size())
+		throw(SpanException("Span has already more items than the new size"));
 	this->_maxItems = newMax;
 }
 
-std::set<int>	Span::getItems( void ) const noexcept
+void	Span::setItems( std::multiset<int> const& newItem )
+{
+	if (newItem.size() > this->_maxItems)
+		throw(SpanException("New span has more items than the max size"));
+	this->_items = newItem;
+}
+
+unsigned int		Span::getMaxItems( void ) const noexcept
+{
+	return (this->_maxItems);
+}
+	
+std::multiset<int>	Span::getItems( void ) const noexcept
 {
 	return (this->_items);
 }
 
-void	Span::setItems( std::set<int> const& newItem ) noexcept
+size_t	Span::_norm( long n1, long n2 ) const noexcept
 {
-	this->_items = newItem;
+	if ((n1 * n2) > 0)
+		return (std::abs(n1 - n2));
+	else
+		return (std::labs(n1) + std::labs(n2));
 }
