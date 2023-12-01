@@ -6,7 +6,7 @@
 /*   By: fra <fra@student.codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/10/27 22:11:43 by fra           #+#    #+#                 */
-/*   Updated: 2023/11/02 23:17:18 by fra           ########   odam.nl         */
+/*   Updated: 2023/11/24 23:18:27 by fra           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,12 +37,7 @@ std::string	storeInput(int argc, char** argv)
 	std::string	input;
 
 	if (argc == 2)
-	{
-		if (std::string(argv[1]).find(".input") != std::string::npos)
-			input = readFile(argv[1]);
-		else
-			input = argv[1];
-	}
+		input = argv[1];
 	else if (argc > 2)
 	{
 		for (int i = 1; i < argc; i++)
@@ -59,15 +54,7 @@ int main(int argc, char** argv)
 	std::list<int>		listInput;
 
 	input = storeInput(argc, argv);
-	try
-	{
-		merger.setString(input);
-	}
-	catch(MergeException const& e)
-	{
-		std::cerr <<"Error: " << e.what() << std::endl;
-		return (1);
-	}
+	merger.setString(input);
 	vectInput = merger.toVector();
 	merger.sort<std::vector<int> >(vectInput);
 	listInput = merger.toList();
