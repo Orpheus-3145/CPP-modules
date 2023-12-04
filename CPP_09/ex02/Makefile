@@ -6,13 +6,14 @@
 #    By: fra <fra@student.codam.nl>                   +#+                      #
 #                                                    +#+                       #
 #    Created: 2023/10/05 21:08:47 by fra           #+#    #+#                  #
-#    Updated: 2023/11/27 00:18:51 by fra           ########   odam.nl          #
+#    Updated: 2023/12/04 20:41:04 by fra           ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
 SHELL := /bin/bash
 
 SOURCES := $(wildcard *.cpp)
+HEADERS := $(wildcard *.hpp)
 NAME := PmergeMe
 
 PP := c++
@@ -24,7 +25,7 @@ RESET = \x1b[0m
 
 all: $(NAME)
 
-$(NAME): $(SOURCES)
+$(NAME): $(SOURCES) $(HEADERS)
 	@$(PP) $(PP_FLAGS) $(DEBUG_FLAGS) $(SOURCES) -o $(NAME)
 	@printf "(C++ 09) $(GREEN)Created program $(NAME)$(RESET)\n"
 

@@ -6,31 +6,11 @@
 /*   By: fra <fra@student.codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/10/27 22:11:43 by fra           #+#    #+#                 */
-/*   Updated: 2023/11/24 23:18:27 by fra           ########   odam.nl         */
+/*   Updated: 2023/12/04 20:28:05 by fra           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "PmergeMe.hpp"
-#include <iostream>
-
-std::string	readFile(std::string fileName)
-{
-	std::ifstream readFile(fileName);
-	std::string line;
-	std::string number;
-	std::string input;
-
-	if (readFile.is_open() == false)
-		return (input);
-	while (std::getline(readFile, line))
-	{
-    	std::stringstream	ss(line);
-		while (ss >> number)
-			input.append(number + std::string(" "));
-	}
-	readFile.close();
-	return (input);
-}
 
 std::string	storeInput(int argc, char** argv)
 {

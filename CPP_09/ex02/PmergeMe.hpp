@@ -6,7 +6,7 @@
 /*   By: fra <fra@student.codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/10/27 20:47:53 by fra           #+#    #+#                 */
-/*   Updated: 2023/11/02 22:53:59 by fra           ########   odam.nl         */
+/*   Updated: 2023/12/04 20:33:30 by fra           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@
 #include <fstream>
 #include <string>
 #include <vector>
-#include <array>
 #include <list>
 #include <algorithm>
 #include <iomanip>
@@ -50,10 +49,14 @@ class PmergeMe
 		void				setString( std::string const& ) ;
 		
 		void							checkInput( std::string ) const ;
-		template <typename Cont> void	sort( Cont const& ) const noexcept {}
+		template <typename Cont> void	sort( Cont const& ) const noexcept ;
 		intVect							toVector( void ) const noexcept ;
 		intList							toList( void ) const noexcept ;
 	
+
+	private:
+		std::string _inputString;
+
 		void				_splitAndSortVect( intVect const&, intVect&, intVect& ) const noexcept;
 		void				_mergeInsertVect( intVect const&, intVect&, intVect& ) const noexcept ;
 		void				_binaryInsertVect( intVect&, int, unsigned int ) const noexcept;
@@ -64,7 +67,4 @@ class PmergeMe
 		void				_printSorted(size_t, int, const char*) const noexcept;
 		template <typename Iterator>
 		void				_advanceIter(Iterator&, Iterator, unsigned int) const noexcept;
-
-	private:
-		std::string _inputString;
 };
