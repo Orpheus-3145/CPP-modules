@@ -6,7 +6,7 @@
 /*   By: fra <fra@student.codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/10/27 21:21:03 by fra           #+#    #+#                 */
-/*   Updated: 2023/12/04 20:30:30 by fra           ########   odam.nl         */
+/*   Updated: 2023/12/14 16:49:07 by faru          ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,12 @@ void		PmergeMe::checkInput( std::string input ) const
 		{
 			if (currNumber.empty() == false)
 			{
-				number = std::stol(currNumber);
+				try {
+					number = std::stol(currNumber);
+				}
+				catch(const std::invalid_argument& e) {
+					throw(MergeException(std::string("not valid: ").append(currNumber)));
+				}
 				if ((number < INT32_MIN) or (number > INT32_MAX))
 					throw(MergeException(std::string("overflow or underflow: ").append(currNumber)));
 				currNumber.clear();
@@ -79,7 +84,12 @@ void		PmergeMe::checkInput( std::string input ) const
 	}
 	if (currNumber.empty() == false)
 	{
-		number = std::stol(currNumber);
+		try {
+			number = std::stol(currNumber);
+		}
+		catch(const std::invalid_argument& e) {
+			throw(MergeException(std::string("not valid: ").append(currNumber)));
+		}
 		if ((number < INT32_MIN) or (number > INT32_MAX))
 			throw(MergeException(std::string("overflow or underflow: ").append(currNumber)));
 	}
@@ -212,8 +222,8 @@ void	PmergeMe::_mergeInsertList( intList& sorted, intList& toSort ) const noexce
 	sorted.insert(sorted.begin(), *currJacobIter);
 	do
 	{
-		PmergeMe::_advanceIter(nextJacobIter, toSort.end(), PmergeMe::_getJacobIndex(index) - 1);
-		PmergeMe::_advanceIter(sortedJacobIter, sorted.end(), PmergeMe::_getJacobIndex(index) - 1);
+		PmergeMe::_advanceIter(nextJacobIter, toSort.end(), PmergeMe::_getJacobIndex(index) - 1 - PmergeMe::_getJacobIndex(index - 1));
+		PmergeMe::_advanceIter(sortedJacobIter, sorted.end(), PmergeMe::_getJacobIndex(index) - 1 - PmergeMe::_getJacobIndex(index - 1));
 		if (nextJacobIter != toSort.end())
 			PmergeMe::_binaryInsertList(sorted, *nextJacobIter, sorted.begin(), sortedJacobIter);
 		std::advance(currJacobIter, 1);

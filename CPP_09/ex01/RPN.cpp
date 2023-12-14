@@ -6,7 +6,7 @@
 /*   By: fra <fra@student.codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/10/25 18:21:22 by fra           #+#    #+#                 */
-/*   Updated: 2023/12/04 20:38:53 by fra           ########   odam.nl         */
+/*   Updated: 2023/12/14 17:39:54 by faru          ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,21 +22,30 @@ std::unordered_map<char, std::function<int(int, int)> > RPN::_ops =
 
 void	RPN::printResult( std::string input )
 {
-	int	result;
+	int				result;
 	std::stack<int> numbers;
 
 	std::cout << input;
-	if (_checkInput(input) == false)
+	try
 	{
-		std::cout << " --> invalid input" << std::endl;
+		_checkInput(input);
+	}
+	catch (const RPNException& e)
+	{
+		std::cout << " --> invalid input: " << e.what() << '\n';
 		return ;
 	}
 	auto start = input.begin();
-	result = _findResult(start, input.end(), numbers);
-	if (result == INT32_MAX)
-		std::cout << " --> invalid input" << std::endl;
-	else
-		std::cout << " = " << result << std::endl;
+	try
+	{
+		result = _findResult(start, input.end(), numbers);
+	}
+	catch (const RPNException& e)
+	{
+		std::cout << " --> invalid input: " << e.what() << '\n';
+		return ;
+	}
+	std::cout << " = " << result << '\n';
 }
 
 int	RPN::_findResult( std::string::iterator& currSymbol, std::string::iterator end, std::stack<int>& numbers )
@@ -54,11 +63,11 @@ int	RPN::_findResult( std::string::iterator& currSymbol, std::string::iterator e
 			second = numbers.top();
 			numbers.pop();
 			if (numbers.empty() == true)
-				return (INT32_MAX);
+				throw (RPNException("internal error"));
 			first = numbers.top();
 			numbers.pop();
 			if ((*currSymbol == '/') and (second == 0))
-				return (INT32_MAX);
+				throw (RPNException("division by 0"));
 			numbers.push(_ops[*currSymbol++](first, second));
 		}
 		else if (isspace(*currSymbol++) == true)
@@ -70,28 +79,23 @@ int	RPN::_findResult( std::string::iterator& currSymbol, std::string::iterator e
 	}
 }
 
-bool	RPN::_checkInput( std::string input )
+void	RPN::_checkInput( std::string input )
 {
 	std::string symbols = "+-*/";
-	std::string numbers = "0123456789 +-*/";
-	int numFound=0, symFound=0;
-	const char *check = input.c_str();
-	while (isspace(*check))
-		check++;
-	if (*check == '\0')
-		return (false);
-	while (*check)
+	int numsFound=0, symFound=0;
+	for (char singleChar : input)
 	{
-		if (symbols.find(*check) != std::string::npos)
+		if (symbols.find(singleChar) != std::string::npos)
+		{
+			if (numsFound < 2)
+				throw (RPNException("operator before operands"));
 			symFound++;
-		else if (numbers.find(*check) != std::string::npos)
-			numFound++;
-		else
-			return (false);
-		check++;
+		}
+		else if (isdigit(singleChar))
+			numsFound++;
+		else if (isspace(singleChar) == false)
+			throw (RPNException(std::string("invalid char ")));
 	}
-	if ((*check == '\0') and ((numFound == 1) or ((numFound > 1) and (symFound > 0))))
-		return (true);
-	else
-		return (false);
+	if (numsFound != symFound + 1)
+		throw (RPNException(std::string("wrong number of operands or operators")));
 }

@@ -6,7 +6,7 @@
 /*   By: fra <fra@student.codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/10/24 21:40:30 by fra           #+#    #+#                 */
-/*   Updated: 2023/12/04 18:21:13 by fra           ########   odam.nl         */
+/*   Updated: 2023/12/14 12:28:13 by faru          ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,5 +63,5 @@ class BitcoinExchange
 	
 		void	_printLine( std::string ) const;
 		void	_addNewItem( time_t, float ) noexcept;
-		float	_getAmountByDate( time_t, int max=365 ) const;
+		float	_getAmountByDate( time_t ) const;
 };

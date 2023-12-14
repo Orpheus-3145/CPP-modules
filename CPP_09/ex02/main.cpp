@@ -6,7 +6,7 @@
 /*   By: fra <fra@student.codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/10/27 22:11:43 by fra           #+#    #+#                 */
-/*   Updated: 2023/12/04 20:28:05 by fra           ########   odam.nl         */
+/*   Updated: 2023/12/14 16:48:14 by faru          ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,10 +34,16 @@ int main(int argc, char** argv)
 	std::list<int>		listInput;
 
 	input = storeInput(argc, argv);
-	merger.setString(input);
+	try {
+		merger.setString(input);
+	}
+	catch(const MergeException& e) {
+		std::cerr << "input error " << e.what() << '\n';
+		return (EXIT_FAILURE);
+	}
 	vectInput = merger.toVector();
 	merger.sort<std::vector<int> >(vectInput);
 	listInput = merger.toList();
 	merger.sort<std::list<int> >(listInput);
-	return(0);
+	return(EXIT_SUCCESS);
 }

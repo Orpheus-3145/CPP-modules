@@ -6,7 +6,7 @@
 /*   By: fra <fra@student.codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/10/25 00:43:46 by fra           #+#    #+#                 */
-/*   Updated: 2023/12/04 18:44:05 by fra           ########   odam.nl         */
+/*   Updated: 2023/12/14 16:57:51 by faru          ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,7 +142,6 @@ void	BitcoinExchange::fillData( void )
 			readDB.close();
 			throw(e);
 		}
-		
 	}
 	readDB.close();
 }
@@ -171,17 +170,19 @@ void	BitcoinExchange::readInput( void ) const
 	readInput.close();
 }
 
-float	BitcoinExchange::_getAmountByDate( time_t ts, int max ) const
+float	BitcoinExchange::_getAmountByDate( time_t ts ) const
 {
+	if (ts < (*(this->_database.begin())).first)
+		return ((*(this->_database.begin())).second);
+	else if (ts > (*(this->_database.rbegin())).first)
+		return ((*(this->_database.rbegin())).second);
 	try
 	{
-		if (max == 0)
-			throw(BitException("no record found in the past year"));
 		return(this->_database.at(ts));
 	}
 	catch(const std::out_of_range& e)
 	{
-		return (_getAmountByDate(ts - 86400, max - 1));
+		return (_getAmountByDate(ts - 86400));
 	}
 }
 
@@ -196,10 +197,15 @@ void	BitcoinExchange::_printLine(std::string line) const
 	if (line.empty() == true)
 		throw(BitException("empty line"));
 	pipePos = line.find("|");
-	if (line.find("|") == std::string::npos)
+	if (pipePos == std::string::npos)
 		throw(BitException("no separator '|' : " + line));
-	dateStr = line.substr(0, pipePos - 1);
-	valueStr = line.substr(pipePos + 2);
+	try {
+		dateStr = line.substr(0, pipePos - 1);
+		valueStr = line.substr(pipePos + 2);
+	}
+	catch (std::out_of_range const& e) {
+		throw(BitException("invalid line : " + line));
+	}
 	timestamp = getTimestamp(dateStr);
 	value = getValue(valueStr, true);
 	std::cout << dateStr << " --> " << valueStr << ": " << value * this->_getAmountByDate(timestamp) << std::endl;
