@@ -31,7 +31,7 @@ $(NAME): $(SOURCES) $(HEADERS)
 
 run: all
 	@clear
-	@./$(NAME) `seq --separator=' ' 10000 | shuf`
+	@./$(NAME) `seq 10000 | shuf | tr '\n' ' '`
 
 clean:
 	@rm -f $(NAME)
