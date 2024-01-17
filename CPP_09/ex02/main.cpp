@@ -6,7 +6,7 @@
 /*   By: fra <fra@student.codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/10/27 22:11:43 by fra           #+#    #+#                 */
-/*   Updated: 2024/01/17 13:16:58 by faru          ########   odam.nl         */
+/*   Updated: 2024/01/17 17:09:37 by faru          ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ int main(int argc, char** argv)
 		merger.setString(input);
 	}
 	catch(const MergeException& e) {
-		std::cerr << "input error " << e.what() << '\n';
+		std::cout << "input error " << e.what() << '\n';
 		return (EXIT_FAILURE);
 	}
 	vectInput = merger.toVector();

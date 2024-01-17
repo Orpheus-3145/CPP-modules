@@ -6,7 +6,7 @@
 #    By: fra <fra@student.codam.nl>                   +#+                      #
 #                                                    +#+                       #
 #    Created: 2023/10/05 21:08:47 by fra           #+#    #+#                  #
-#    Updated: 2024/01/17 13:22:27 by faru          ########   odam.nl          #
+#    Updated: 2024/01/17 17:09:31 by faru          ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -31,7 +31,7 @@ $(NAME): $(SOURCES) $(HEADERS)
 
 run: all
 	@clear
-	@./$(NAME) `seq 0 100000 | shuf -n 100000 | tr '\n' ' '`
+	@./$(NAME) `seq 100000 | shuf -n 1000 | tr '\n' ' '`
 
 clean:
 	@rm -f $(NAME)

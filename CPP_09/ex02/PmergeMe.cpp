@@ -6,7 +6,7 @@
 /*   By: fra <fra@student.codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/10/27 21:21:03 by fra           #+#    #+#                 */
-/*   Updated: 2024/01/17 13:26:38 by faru          ########   odam.nl         */
+/*   Updated: 2024/01/17 17:08:09 by faru          ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,9 +50,7 @@ void		PmergeMe::checkInput( std::string input ) const
 	std::stringstream	errorStream("");
 	std::string			currNumber;
 	long				number;
-	
-	if (input.empty())
-		throw(MergeException("empty string"));
+
 	for (char digit : input)
 	{
 		if ((digit == ' ') or 
@@ -111,7 +109,8 @@ void PmergeMe::sort<intVect >( intVect const& vectInput ) const noexcept
 	this->_mergeInsertVect(vectInput, sorted, toSort);
 	auto end = std::chrono::high_resolution_clock::now();
 	auto deltaTime = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
-	std::cout << "is sorted: " << std::is_sorted(sorted.begin(), sorted.end());
+	std::cout << "is sorted: ";
+	(std::is_sorted(sorted.begin(), sorted.end()) == 1) ? std::cout << "true" : std::cout << "false";
 	PmergeMe::_printSorted(sorted.size(), deltaTime, "vector");
 }
 
@@ -131,8 +130,31 @@ void PmergeMe::sort<intList >( intList const& listInput ) const noexcept
 	this->_mergeInsertList(sorted, toSort);
 	auto end = std::chrono::high_resolution_clock::now();
 	auto deltaTime = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
-	std::cout << "is sorted: " << std::is_sorted(sorted.begin(), sorted.end());
+	std::cout << "is sorted: ";
+	(std::is_sorted(sorted.begin(), sorted.end()) == 1) ? std::cout << "true" : std::cout << "false";
 	PmergeMe::_printSorted(sorted.size(), deltaTime, "list");
+}
+
+intVect	PmergeMe::toVector( void ) const noexcept 
+{
+	intVect				vect;
+    int					number;
+    std::stringstream	ss(this->_inputString);
+
+    while (ss >> number)
+		vect.push_back(number);
+	return (vect);
+}
+
+intList	PmergeMe::toList( void ) const noexcept 
+{
+	intList				list;
+    int					number;
+    std::stringstream	ss(this->_inputString);
+
+    while (ss >> number)
+		list.push_back(number);
+	return (list);
 }
 
 void	PmergeMe::_splitAndSortVect( intVect const& vectInput, intVect& sorted, intVect& toSort ) const noexcept
@@ -152,44 +174,6 @@ void	PmergeMe::_splitAndSortVect( intVect const& vectInput, intVect& sorted, int
 	{
 		sorted.push_back(vectPairs[i].first);
 		toSort.push_back(vectPairs[i].second);
-	}
-}
-
-void	PmergeMe::_sortVectPairs(std::vector<pair>& toSort) const noexcept
-{
-	int j;
-
-	for (size_t i=1; i<toSort.size(); i++)
-	{
-		j = i - 1;
-		while ((j >= 0) && (toSort[j].first > toSort[j + 1].first))
-		{
-			std::swap(toSort[j + 1], toSort[j]);
-			j--;
-		}
-	}
-}
-
-void	PmergeMe::_sortListPairs(std::list<pair>& toSort) const noexcept
-{
-	std::list<pair>::iterator it, jt1, jt2;
-	bool endLoop;
-
-	it = toSort.begin();
-	it++;
-	for (; it!=toSort.end(); it++)
-	{
-		jt1 = it;
-		jt2 = jt1--;
-		while ((*jt1).first > (*jt2).first)
-		{
-			endLoop = jt1 == toSort.begin();
-			std::swap(*jt1, *jt2);
-			jt1--;
-			jt2--;
-			if (endLoop)
-				break;
-		}
 	}
 }
 
@@ -218,6 +202,27 @@ void	PmergeMe::_mergeInsertVect( intVect const& vectInput, intVect& sorted, intV
 	} while (currJacobIndex < nPairs);
 	if (vectInput.size() % 2)
 		PmergeMe::_binaryInsertVect(sorted, vectInput.back(), vectInput.size() - 1);
+}
+
+void	PmergeMe::_binaryInsertVect(intVect& vect, int newItem, unsigned int max_range ) const noexcept
+{
+	intVect::iterator iter = std::upper_bound(vect.begin(), vect.begin() + max_range, newItem);
+	vect.insert(iter, newItem);
+}
+
+void	PmergeMe::_sortVectPairs(std::vector<pair>& toSort) const noexcept
+{
+	int j;
+
+	for (size_t i=1; i<toSort.size(); i++)
+	{
+		j = i - 1;
+		while ((j >= 0) && (toSort[j].first < toSort[j + 1].first))
+		{
+			std::swap(toSort[j + 1], toSort[j]);
+			j--;
+		}
+	}
 }
 
 void	PmergeMe::_splitAndSortList( intList const& listInput, intList& sorted, intList& toSort ) const noexcept
@@ -274,44 +279,39 @@ void	PmergeMe::_mergeInsertList( intList& sorted, intList& toSort ) const noexce
 	}	while (nextJacobIter != toSort.end());
 }
 
-intVect	PmergeMe::toVector( void ) const noexcept 
-{
-	intVect				vect;
-    int					number;
-    std::stringstream	ss(this->_inputString);
-
-    while (ss >> number)
-		vect.push_back(number);
-	return (vect);
-}
-
-intList	PmergeMe::toList( void ) const noexcept 
-{
-	intList				list;
-    int					number;
-    std::stringstream	ss(this->_inputString);
-
-    while (ss >> number)
-		list.push_back(number);
-	return (list);
-}
-
-void	PmergeMe::_binaryInsertVect(intVect& vect, int newItem, unsigned int max_range ) const noexcept
-{
-	intVect::iterator iter = std::upper_bound(vect.begin(), vect.begin() + max_range, newItem);
-	vect.insert(iter, newItem);
-}
-
 void	PmergeMe::_binaryInsertList(intList& list, int newItem, intList::iterator start, intList::iterator end ) const noexcept
 {
 	intList::iterator iter = std::upper_bound(start, end, newItem);
 	list.insert(iter, newItem);
 }
 
+void	PmergeMe::_sortListPairs(std::list<pair>& toSort) const noexcept
+{
+	std::list<pair>::iterator it, jt1, jt2;
+	bool endLoop;
+
+	it = toSort.begin();
+	it++;
+	for (; it!=toSort.end(); it++)
+	{
+		jt1 = it;
+		jt2 = jt1--;
+		while ((*jt1).first < (*jt2).first)
+		{
+			endLoop = jt1 == toSort.begin();
+			std::swap(*jt1, *jt2);
+			jt1--;
+			jt2--;
+			if (endLoop)
+				break;
+		}
+	}
+}
+
 void	PmergeMe::_printSorted(size_t nItems, int time, const char* contName) const noexcept
 {
 	float	milliSecs = float(time) / 1000.f;
-	std::cout << " - time to process a range of " << nItems << " elements with std::" << contName << ": " << milliSecs << " (milliseconds)" << std::endl;
+	std::cout << " - time to process " << nItems << " elements in std::" << contName << ": " << milliSecs << " (milliseconds)" << std::endl;
 }
 
 template <typename Iterator>
