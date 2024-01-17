@@ -6,7 +6,7 @@
 /*   By: fra <fra@student.codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/10/27 21:21:03 by fra           #+#    #+#                 */
-/*   Updated: 2023/12/14 16:49:07 by faru          ########   odam.nl         */
+/*   Updated: 2024/01/17 13:26:38 by faru          ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -147,11 +147,49 @@ void	PmergeMe::_splitAndSortVect( intVect const& vectInput, intVect& sorted, int
 		else
 			vectPairs.push_back(pair({vectInput[i * 2 + 1], vectInput[i * 2]}));
 	}
-	std::sort(vectPairs.begin(), vectPairs.end(), [] (pair const& x, pair const& y) -> bool {return(x.first > y.first);} );
+	_sortVectPairs(vectPairs);
 	for (int i=nPairs-1; i>=0; i--)
 	{
 		sorted.push_back(vectPairs[i].first);
 		toSort.push_back(vectPairs[i].second);
+	}
+}
+
+void	PmergeMe::_sortVectPairs(std::vector<pair>& toSort) const noexcept
+{
+	int j;
+
+	for (size_t i=1; i<toSort.size(); i++)
+	{
+		j = i - 1;
+		while ((j >= 0) && (toSort[j].first > toSort[j + 1].first))
+		{
+			std::swap(toSort[j + 1], toSort[j]);
+			j--;
+		}
+	}
+}
+
+void	PmergeMe::_sortListPairs(std::list<pair>& toSort) const noexcept
+{
+	std::list<pair>::iterator it, jt1, jt2;
+	bool endLoop;
+
+	it = toSort.begin();
+	it++;
+	for (; it!=toSort.end(); it++)
+	{
+		jt1 = it;
+		jt2 = jt1--;
+		while ((*jt1).first > (*jt2).first)
+		{
+			endLoop = jt1 == toSort.begin();
+			std::swap(*jt1, *jt2);
+			jt1--;
+			jt2--;
+			if (endLoop)
+				break;
+		}
 	}
 }
 
@@ -169,7 +207,7 @@ void	PmergeMe::_mergeInsertVect( intVect const& vectInput, intVect& sorted, intV
 	inserted++;
 	do
 	{
-		nextJacobIndex = PmergeMe::_getJacobIndex(index) - 1;
+		nextJacobIndex = this->_jacobNumbers[index] - 1;
 		if (nextJacobIndex < nPairs)
 			PmergeMe::_binaryInsertVect(sorted, toSort[nextJacobIndex], inserted++ + nextJacobIndex);
 		for (int j=currJacobIndex + 1; j < std::min<int>(nextJacobIndex, nPairs); j++)
@@ -181,7 +219,7 @@ void	PmergeMe::_mergeInsertVect( intVect const& vectInput, intVect& sorted, intV
 	if (vectInput.size() % 2)
 		PmergeMe::_binaryInsertVect(sorted, vectInput.back(), vectInput.size() - 1);
 }
-	
+
 void	PmergeMe::_splitAndSortList( intList const& listInput, intList& sorted, intList& toSort ) const noexcept
 {
 	std::list<pair>				listPairs;
@@ -200,7 +238,7 @@ void	PmergeMe::_splitAndSortList( intList const& listInput, intList& sorted, int
 		curr = std::next(next);
 		next = std::next(curr);
 	}
-	listPairs.sort([] (pair const& x, pair const& y) -> bool {return(x.first > y.first);} );
+	_sortListPairs(listPairs);
 	for (auto it=listPairs.rbegin(); it != listPairs.rend(); it++)
 	{
 		sorted.push_back((*it).first);
@@ -222,8 +260,8 @@ void	PmergeMe::_mergeInsertList( intList& sorted, intList& toSort ) const noexce
 	sorted.insert(sorted.begin(), *currJacobIter);
 	do
 	{
-		PmergeMe::_advanceIter(nextJacobIter, toSort.end(), PmergeMe::_getJacobIndex(index) - 1 - PmergeMe::_getJacobIndex(index - 1));
-		PmergeMe::_advanceIter(sortedJacobIter, sorted.end(), PmergeMe::_getJacobIndex(index) - 1 - PmergeMe::_getJacobIndex(index - 1));
+		PmergeMe::_advanceIter(nextJacobIter, toSort.end(), this->_jacobNumbers[index] - 1 - this->_jacobNumbers[index - 1]);
+		PmergeMe::_advanceIter(sortedJacobIter, sorted.end(), this->_jacobNumbers[index] - 1 - this->_jacobNumbers[index - 1]);
 		if (nextJacobIter != toSort.end())
 			PmergeMe::_binaryInsertList(sorted, *nextJacobIter, sorted.begin(), sortedJacobIter);
 		std::advance(currJacobIter, 1);
@@ -256,16 +294,6 @@ intList	PmergeMe::toList( void ) const noexcept
     while (ss >> number)
 		list.push_back(number);
 	return (list);
-}
-
-unsigned int	PmergeMe::_getJacobIndex( int index ) const noexcept
-{
-	if (index == 0)
-		return (1);
-	else if (index == 1)
-		return (3);
-	else
-		return ( _getJacobIndex(index - 1) + _getJacobIndex(index - 2) * 2);
 }
 
 void	PmergeMe::_binaryInsertVect(intVect& vect, int newItem, unsigned int max_range ) const noexcept
