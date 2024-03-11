@@ -6,7 +6,7 @@
 #    By: fra <fra@student.codam.nl>                   +#+                      #
 #                                                    +#+                       #
 #    Created: 2023/09/27 17:26:06 by fra           #+#    #+#                  #
-#    Updated: 2023/09/28 01:33:40 by fra           ########   odam.nl          #
+#    Updated: 2024/03/11 14:32:04 by faru          ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -41,7 +41,10 @@ $(EXE): $(OBJECTS) $(NAME)
 	@$(PP) $(PP_FLAGS) $(IFLAGS) $(OBJECTS) $(NAME) -o $(EXE)
 	@printf "(C++ 00) $(GREEN)Created program $(EXE)$(RESET)\n"
 
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp $(HEADERS)
+$(OBJ_DIR):
+	@mkdir -p $@
+
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp $(HEADERS) $(OBJ_DIR)
 	@$(PP) $(PP_FLAGS) $(IFLAGS) -c $< -o $@
 	@printf "(C++ 00) $(BLUE)Created object $$(basename $@)$(RESET)\n"
 
